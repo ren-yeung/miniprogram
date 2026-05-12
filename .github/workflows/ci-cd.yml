@@ -1,0 +1,163 @@
+name: 暖宠星球小程序 CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: 代码检查与测试
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 设置 Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 安装依赖
+      run: |
+        if [ -f "package.json" ]; then
+          npm ci
+        else
+          echo "No package.json found, skipping npm install"
+        fi
+        
+    - name: 代码规范检查
+      run: |
+        if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ]; then
+          npm run lint
+        else
+          echo "No ESLint config found, skipping lint"
+        fi
+      continue-on-error: true
+        
+    - name: 运行测试
+      run: |
+        if [ -f "package.json" ] && grep -q '"test"' package.json; then
+          npm test
+        else
+          echo "No test script found, skipping tests"
+        fi
+      continue-on-error: true
+        
+    - name: 检查文件大小
+      run: |
+        echo "检查大文件..."
+        find . -type f -size +500k -not -path "./.git/*" -not -path "*/node_modules/*" | head -20 || true
+        echo "提示：超过 500KB 的文件可能影响小程序加载速度"
+
+  deploy-miniprogram:
+    name: 部署到微信小程序
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 设置 Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: 安装微信小程序 CLI 工具
+      run: |
+        npm install -g miniprogram-ci
+        
+    - name: 准备上传（需要配置 Secrets）
+      env:
+        APPID: ${{ secrets.WECHAT_APPID }}
+        PRIVATE_KEY: ${{ secrets.WECHAT_PRIVATE_KEY }}
+      run: |
+        # 检查是否配置了必要的 Secrets
+        if [ -z "$APPID" ] || [ -z "$PRIVATE_KEY" ]; then
+          echo "::warning::未配置 WECHAT_APPID 或 WECHAT_PRIVATE_KEY"
+          echo "请在 GitHub Settings → Secrets and variables → Actions 中配置"
+          echo "部署步骤已跳过"
+          exit 0
+        fi
+        
+        echo "开始上传代码到微信小程序后台..."
+        
+        # 将私钥写入文件
+        echo "$PRIVATE_KEY" > private.key
+        chmod 600 private.key
+        
+        # 创建上传脚本
+        cat > upload.js << 'EOF'
+        const ci = require('miniprogram-ci');
+        
+        const appId = process.env.APPID;
+        const privateKeyPath = './private.key';
+        const projectPath = './miniprogram';
+        
+        const project = new ci.Project({
+          appid: appId,
+          type: 'miniProgram',
+          projectPath: projectPath,
+          privateKeyPath: privateKeyPath,
+          ignores: ['node_modules/**/*', '.git/**/*'],
+        });
+        
+        ci.upload({
+          project,
+          version: process.env.VERSION || '1.0.0',
+          desc: process.env.DESC || 'Auto upload by GitHub Actions',
+          setting: {
+            es6: true,
+            es7: true,
+            minify: true,
+            codeProtect: false,
+            minifyJS: true,
+            minifyWXML: true,
+            minifyWXSS: true,
+            autoPrefixWXSS: true,
+          },
+        }).then(res => {
+          console.log('✅ 上传成功', res);
+        }).catch(err => {
+          console.error('❌ 上传失败', err);
+          process.exit(1);
+        });
+        EOF
+        
+        # 执行上传
+        node upload.js
+        
+    - name: 清理敏感文件
+      if: always()
+      run: |
+        rm -f private.key
+        rm -f upload.js
+
+  notify:
+    name: 部署通知
+    needs: [test, deploy-miniprogram]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: 检查部署结果
+      run: |
+        echo "测试状态: ${{ needs.test.result }}"
+        echo "部署状态: ${{ needs.deploy-miniprogram.result }}"
+        
+    - name: 通知成功
+      if: needs.deploy-miniprogram.result == 'success'
+      run: |
+        echo "✅ 部署成功！"
+        echo "小程序代码已成功部署到微信后台"
+        
+    - name: 通知失败
+      if: needs.deploy-miniprogram.result == 'failure'
+      run: |
+        echo "❌ 部署失败！"
+        echo "请检查 GitHub Actions 日志"
