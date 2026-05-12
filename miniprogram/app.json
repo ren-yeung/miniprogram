@@ -3,6 +3,7 @@
     "pages/index/index",
     "pages/square/square",
     "pages/tools/tools",
+    "pages/memorial-day/memorial-day",
     "pages/profile/profile",
     "pages/post-detail/post-detail",
     "pages/search/search",

@@ -52,6 +52,10 @@ Page({
   // 工具卡片点击
   onToolTap(e) {
     const name = e.currentTarget.dataset.name
+    if (name === '宠物纪念日') {
+      wx.navigateTo({ url: '/pages/memorial-day/memorial-day' })
+      return
+    }
     wx.showToast({
       title: name,
       icon: 'none'

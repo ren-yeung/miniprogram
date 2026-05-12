@@ -1,0 +1,123 @@
+<!--
+  宠物纪念日 - pages/memorial-day/memorial-day.wxml
+  风格对齐暖宠星球现有设计
+-->
+<view class="memorial-page">
+  
+  <!-- 自定义导航栏 -->
+  <view 
+    class="nav-bar-container"
+    style="padding-top: {{statusBarHeight}}px;"
+  >
+    <view class="nav-bar-title" style="height: {{menuButtonHeight}}px;">
+      <view class="nav-left">
+        <view class="back-btn" bindtap="goBack">
+          <text>‹</text>
+        </view>
+      </view>
+      <view class="nav-center">
+        <text class="logo-text">宠物纪念日</text>
+      </view>
+      <view class="nav-right">
+        <view class="nav-action" bindtap="onAddTap">
+          <text>+</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主内容 -->
+  <scroll-view class="content" scroll-y>
+
+    <!-- 下一个纪念日 - 倒计时卡片 -->
+    <view class="countdown-card" wx:if="{{nextMemorial}}">
+      <view class="countdown-bg">
+        <text class="countdown-emoji">{{nextMemorial.emoji}}</text>
+      </view>
+      <view class="countdown-info">
+        <text class="countdown-label">下一个纪念日</text>
+        <text class="countdown-name">{{nextMemorial.name}}</text>
+        <view class="countdown-days">
+          <text class="days-number">{{nextMemorial.daysUntil}}</text>
+          <text class="days-unit">天</text>
+          <text class="days-suffix">后</text>
+        </view>
+        <text class="countdown-date">{{nextMemorial.dateText}}</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:elif="{{!memorials.length && !loading}}">
+      <view class="empty-icon">🎂</view>
+      <text class="empty-title">还没有纪念日</text>
+      <text class="empty-desc">记录宠物的重要日子，不错过每一个纪念</text>
+      <view class="empty-add-btn" bindtap="onAddTap">
+        <text>+ 添加纪念日</text>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 纪念日列表 - 分类分区 -->
+    <view class="section" wx:for="{{memorialGroups}}" wx:key="type">
+      <view class="section-header">
+        <view class="section-accent" style="background:{{item.color}}"></view>
+        <text class="section-title">{{item.typeName}}</text>
+        <text class="section-count">{{item.list.length}}个</text>
+      </view>
+      <view class="memorial-list">
+        <view 
+          class="memorial-card"
+          wx:for="{{item.list}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="onMemorialTap"
+        >
+          <view class="memorial-icon" style="background:{{item.bg}}">
+            <text>{{item.emoji}}</text>
+          </view>
+          <view class="memorial-info">
+            <view class="memorial-name-row">
+              <text class="memorial-name">{{item.name}}</text>
+              <text 
+                class="memorial-badge"
+                wx:if="{{item.daysUntil <= 7 && item.daysUntil > 0}}"
+                style="background:#FFF0F0; color:#FF6B6B;"
+              >即将到来</text>
+              <text 
+                class="memorial-badge"
+                wx:elif="{{item.daysUntil == 0}}"
+                style="background:#FFF5E6; color:#F59E0B;"
+              >就在今天</text>
+            </view>
+            <text class="memorial-desc">{{item.petName}} · {{item.typeLabel}}</text>
+            <view class="memorial-meta">
+              <text class="memorial-date">{{item.dateText}}</text>
+              <text class="memorial-divider">·</text>
+              <text class="memorial-days">
+                <text wx:if="{{item.daysUntil > 0}}">还有 {{item.daysUntil}} 天</text>
+                <text wx:elif="{{item.daysUntil == 0}}">就是今天 🎉</text>
+                <text wx:else>已过 {{-item.daysUntil}} 天</text>
+              </text>
+            </view>
+          </view>
+          <view class="memorial-arrow">›</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部区域 -->
+    <view class="bottom-area">
+      <view class="add-button" bindtap="onAddTap">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加纪念日</text>
+      </view>
+      <view class="bottom-tip">记录每一个值得纪念的日子 🐾</view>
+    </view>
+
+  </scroll-view>
+
+</view>
