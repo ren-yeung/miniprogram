@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>暖宠星球 - 广场</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    * { font-family: 'Noto Sans SC', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #FFF9F5; max-width: 375px; margin: 0 auto; overflow-x: hidden; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 70px); }
+    ::-webkit-scrollbar { display: none; }
+    .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .scroll-hide::-webkit-scrollbar { display: none; }
+
+    /* Masonry */
+    .masonry { column-count: 2; column-gap: 10px; }
+    .masonry-item { break-inside: avoid; margin-bottom: 10px; }
+
+    /* Animations */
+    @keyframes likeScale { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)} }
+    .like-pop { animation: likeScale 0.3s ease; }
+    @keyframes fabPop { 0%{transform:scale(0) rotate(-45deg)} 70%{transform:scale(1.1) rotate(0deg)} 100%{transform:scale(1) rotate(0deg)} }
+    .fab-appear { animation: fabPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
+    @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
+    .sheet-show { animation: slideUp 0.3s ease; }
+
+    /* Tab active */
+    .square-tab { transition: all 0.2s; }
+    .square-tab.active { color: #FF6B6B; font-weight: 600; }
+    .square-tab.active::after { content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); width:24px; height:3px; background:#FF6B6B; border-radius:2px; }
+
+    /* Cards */
+    .note-card { transition: all 0.2s ease; cursor: pointer; }
+    .note-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .note-card:active { transform: scale(0.98); }
+
+    /* FAB */
+    .fab-btn { transition: all 0.2s ease; }
+    .fab-btn:hover { transform: scale(1.05); }
+    .fab-btn:active { transform: scale(0.95); }
+
+    /* TabBar */
+    .tabbar-item.active svg { color: #FF6B6B; }
+    .tabbar-item.active .tabbar-label { color: #FF6B6B; }
+
+    /* Like animation */
+    .heart-beat { animation: likeScale 0.3s ease; }
+
+    /* Sheet overlay */
+    .sheet-overlay { transition: opacity 0.3s; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== STATUS BAR ===================== -->
+<div class="h-11 bg-white"></div>
+
+<!-- ===================== HEADER ===================== -->
+<div class="sticky top-0 z-30 bg-white" style="padding-top:env(safe-area-inset-top,0px);">
+  <div class="px-3 pt-2 pb-3">
+    <!-- Title -->
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-sm" style="background:linear-gradient(135deg,#FF6B6B,#FF8EC4);">
+          🐾
+        </div>
+        <span class="text-lg font-bold text-gray-800">暖宠广场</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="flex gap-0 overflow-x-auto scroll-hide border-b" style="border-color:#F0EDE8;">
+      <button class="square-tab active relative text-sm py-2.5 px-4 flex-shrink-0 whitespace-nowrap" data-category="all">全部</button>
+      <button class="square-tab relative text-sm text-gray-400 py-2.5 px-4 flex-shrink-0 whitespace-nowrap" data-category="晒宠">晒宠日常</button>
+      <button class="square-tab relative text-sm text-gray-400 py-2.5 px-4 flex-shrink-0 whitespace-nowrap" data-category="求助">求助问答</button>
+      <button class="square-tab relative text-sm text-gray-400 py-2.5 px-4 flex-shrink-0 whitespace-nowrap" data-category="送养">宠物送养</button>
+      <button class="square-tab relative text-sm text-gray-400 py-2.5 px-4 flex-shrink-0 whitespace-nowrap" data-category="闲置">二手闲置</button>
+      <button class="square-tab relative text-sm text-gray-400 py-2.5 px-4 flex-shrink-0 whitespace-nowrap" data-category="经验">养宠经验</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FEED ===================== -->
+<div class="px-2 pt-2 pb-4">
+  <div class="masonry" id="squareMasonry">
+
+    <!-- Post 1: 晒宠 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/sq1/400/500" class="w-full object-cover" style="height:190px;" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(255,142,196,0.85);">🐶 晒宠</span>
+        <!-- Multi-photo indicator -->
+        <div class="absolute top-2 right-2 w-6 h-6 rounded-md flex items-center justify-center" style="background:rgba(0,0,0,0.4);">
+          <span class="text-white text-xs">9</span>
+        </div>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">周末带肉丸去了趟宠物乐园，它居然会游泳了！🏊 太惊喜了～</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=3" class="w-6 h-6 rounded-full object-cover border-2 border-white">
+            <div>
+              <span class="text-xs text-gray-500">肉丸妈</span>
+              <span class="text-xs text-gray-300 ml-1">· 上海</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="like-btn flex items-center gap-1">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">345</span>
+            </button>
+          </div>
+        </div>
+        <!-- Comment preview -->
+        <div class="mt-2 rounded-lg p-2" style="background:#FFF9F7;">
+          <p class="text-xs text-gray-400">💬 旺财主人：也太可爱了吧！</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 2: 求助 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/sq2/400/340" class="w-full object-cover" style="height:145px;" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(253,244,255,0.9);color:#7C3AED;">🤝 求助</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">猫咪最近总是乱叫，半夜也叫，有没有人知道怎么回事？😿</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=8" class="w-6 h-6 rounded-full object-cover border-2 border-white">
+            <span class="text-xs text-gray-500">焦虑的猫奴</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="like-btn flex items-center gap-1">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">18</span>
+            </button>
+          </div>
+        </div>
+        <div class="mt-2 rounded-lg p-2" style="background:#F5F0FF;">
+          <p class="text-xs text-gray-400">💬 兽医小王：可能是发情期到了，建议尽早绝育</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 3: 送养 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/sq3/400/480" class="w-full object-cover" style="height:210px;" loading="lazy">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:#FF6B6B;">🏠 免费送养</span>
+        <div class="absolute bottom-3 left-3 right-3">
+          <div class="flex gap-1.5">
+            <span class="text-xs px-2 py-0.5 rounded-full text-gray-700" style="background:rgba(255,255,255,0.9);">🐱 橘猫</span>
+            <span class="text-xs px-2 py-0.5 rounded-full text-gray-700" style="background:rgba(255,255,255,0.9);">3个月</span>
+            <span class="text-xs px-2 py-0.5 rounded-full text-gray-700" style="background:rgba(255,255,255,0.9);">♀ 母</span>
+          </div>
+        </div>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-2">橘猫小橘子找领养🐱 3个月大，活泼可爱，已驱虫，因工作调动无法继续抚养，希望找到有爱的家庭</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=15" class="w-6 h-6 rounded-full object-cover border-2 border-white">
+            <span class="text-xs text-gray-500">橙子小姐</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:#FFE0E0;color:#FF6B6B;">❤️ 52人想领养</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 4: 晒宠 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/sq4/400/360" class="w-full object-cover" style="height:155px;" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(255,107,107,0.85);">🐱 晒宠</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">猫生第一张写真📸 奶凶奶凶的小脑斧，太可爱啦！</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=20" class="w-6 h-6 rounded-full object-cover border-2 border-white">
+            <span class="text-xs text-gray-500">脑斧主人</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="like-btn flex items-center gap-1">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">678</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 5: 二手 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/sq5/400/420" class="w-full object-cover" style="height:175px;" loading="lazy">
+        <div class="absolute top-2 left-2 text-xs px-2 py-1 rounded-lg font-medium" style="background:#FFF9F5;color:#FF6B6B;">💰 ¥80</div>
+        <span class="absolute top-2 right-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(107,159,255,0.85);">🔄 二手</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-2">猫咪全自动饮水机九成新，因为换了新机器出闲置，低价出！</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=27" class="w-6 h-6 rounded-full object-cover border-2 border-white">
+            <span class="text-xs text-gray-500">闲置猫奴</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="like-btn flex items-center gap-1">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">34</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 6: 经验 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/sq6/400/380" class="w-full object-cover" style="height:160px;" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(127,216,166,0.85);">📝 经验</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">10年养猫人总结的猫咪常见病处理手册📖 收藏这一篇就够了！建议收藏</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=33" class="w-6 h-6 rounded-full object-cover border-2 border-white">
+            <span class="text-xs text-gray-500">资深铲屎官</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="like-btn flex items-center gap-1">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">1.8k</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 7: 晒宠 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/sq7/400/450" class="w-full object-cover" style="height:190px;" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(179,136,255,0.85);">🐰 晒宠</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">兔兔睡觉姿势大赏💤 你家兔兔也是这样睡的吗？太治愈了！</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=40" class="w-6 h-6 rounded-full object-cover border-2 border-white">
+            <span class="text-xs text-gray-500">兔兔星球</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="like-btn flex items-center gap-1">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">923</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 8: 求助 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/sq8/400/400" class="w-full object-cover" style="height:170px;" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(253,244,255,0.9);color:#7C3AED;">🤝 求助</span>
+        <div class="absolute bottom-2 left-2">
+          <span class="text-xs px-2 py-0.5 rounded-full text-xs" style="background:rgba(0,0,0,0.5);color:white;">🔴 紧急</span>
+        </div>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snamp line-clamp-3">紧急求助！狗狗吃了巧克力怎么办？？坐标浦东，需要紧急联系附近的宠物医院！</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=44" class="w-6 h-6 rounded-full object-cover border-2 border-white">
+            <span class="text-xs text-gray-500">紧急求助</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="like-btn flex items-center gap-1">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">67</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== FAB BUTTON ===================== -->
+<div class="sticky bottom-20 right-4 z-40" style="position:fixed; bottom:80px; right:max(calc((100vw - 375px)/2 + 16px), 16px);">
+  <button id="fabBtn" class="fab-btn w-14 h-14 rounded-full flex items-center justify-center shadow-lg text-white fab-appear" style="background:linear-gradient(135deg,#FF6B6B,#FF8EC4);">
+    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+  </button>
+</div>
+
+<!-- ===================== PUBLISH SHEET ===================== -->
+<div id="publishSheet" class="fixed inset-0 z-50 hidden">
+  <div class="sheet-overlay absolute inset-0 bg-black/40" id="sheetOverlay"></div>
+  <div class="absolute bottom-0 left-0 right-0 mx-auto w-full sheet-show" style="max-width:375px; padding-bottom:env(safe-area-inset-bottom,0px);">
+    <div class="bg-white rounded-t-3xl p-4">
+      <div class="w-10 h-1 rounded-full bg-gray-200 mx-auto mb-4"></div>
+      <p class="text-sm font-semibold text-gray-700 text-center mb-4">发布内容</p>
+      <div class="grid grid-cols-3 gap-3">
+        <button class="flex flex-col items-center gap-2 p-4 rounded-2xl" style="background:#FFF0F0;" onclick="closeSheet()">
+          <span class="text-2xl">📷</span>
+          <span class="text-xs text-gray-700">晒宠日常</span>
+        </button>
+        <button class="flex flex-col items-center gap-2 p-4 rounded-2xl" style="background:#F0FFF4;" onclick="closeSheet()">
+          <span class="text-2xl">🏠</span>
+          <span class="text-xs text-gray-700">宠物送养</span>
+        </button>
+        <button class="flex flex-col items-center gap-2 p-4 rounded-2xl" style="background:#F5F0FF;" onclick="closeSheet()">
+          <span class="text-2xl">🤝</span>
+          <span class="text-xs text-gray-700">求助问答</span>
+        </button>
+        <button class="flex flex-col items-center gap-2 p-4 rounded-2xl" style="background:#FFF9F0;" onclick="closeSheet()">
+          <span class="text-2xl">🔄</span>
+          <span class="text-xs text-gray-700">二手闲置</span>
+        </button>
+        <button class="flex flex-col items-center gap-2 p-4 rounded-2xl" style="background:#F0F4FF;" onclick="closeSheet()">
+          <span class="text-2xl">🔍</span>
+          <span class="text-xs text-gray-700">走失寻主</span>
+        </button>
+        <button class="flex flex-col items-center gap-2 p-4 rounded-2xl" style="background:#FFF4F4;" onclick="closeSheet()">
+          <span class="text-2xl">🎉</span>
+          <span class="text-xs text-gray-700">萌宠聚会</span>
+        </button>
+      </div>
+      <button class="w-full mt-4 py-3 rounded-2xl text-gray-400 text-sm" onclick="closeSheet()">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== TAB BAR ===================== -->
+<div class="sticky bottom-0 w-full z-50">
+  <div class="flex items-stretch justify-around py-2 bg-white rounded-t-2xl shadow-lg border-t" style="border-color:#F5EDE8; padding-bottom:env(safe-area-inset-bottom, 0px);">
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-home.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">首页</span>
+    </button>
+    <button class="tabbar-item active flex flex-col items-center gap-0.5 py-1 px-4">
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="tabbar-label text-xs">广场</span>
+    </button>
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-tools.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">平台</span>
+    </button>
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-profile.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">我的</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+  // Category tabs
+  document.querySelectorAll('.square-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.square-tab').forEach(t => {
+        t.classList.remove('active');
+        t.classList.add('text-gray-400');
+        t.classList.remove('text-sm','font-semibold');
+      });
+      this.classList.add('active', 'text-sm', 'font-semibold');
+      this.classList.remove('text-gray-400');
+    });
+  });
+
+  // Like button
+  document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const icon = this.querySelector('.liked-icon');
+      const count = this.querySelector('.like-count');
+      const isLiked = icon.getAttribute('fill') === 'currentColor';
+      if (!isLiked) {
+        icon.setAttribute('fill', 'currentColor');
+        icon.style.color = '#FF6B6B';
+        count.style.color = '#FF6B6B';
+        let n = parseInt(count.textContent);
+        if (count.textContent.includes('k')) n = parseFloat(count.textContent) * 1000;
+        count.textContent = (n + 1) > 999 ? ((n+1)/1000).toFixed(1)+'k' : String(n+1);
+        this.classList.add('like-pop');
+        setTimeout(() => this.classList.remove('like-pop'), 300);
+      } else {
+        icon.setAttribute('fill', 'none');
+        icon.style.color = '#9CA3AF';
+        count.style.color = '#9CA3AF';
+        let n = parseInt(count.textContent);
+        if (count.textContent.includes('k')) n = parseFloat(count.textContent) * 1000;
+        count.textContent = (n - 1) > 999 ? ((n-1)/1000).toFixed(1)+'k' : String(n-1);
+      }
+    });
+  });
+
+  // FAB
+  document.getElementById('fabBtn').addEventListener('click', function() {
+    document.getElementById('publishSheet').classList.remove('hidden');
+  });
+
+  function closeSheet() {
+    document.getElementById('publishSheet').classList.add('hidden');
+  }
+  document.getElementById('sheetOverlay').addEventListener('click', closeSheet);
+
+  // Card interaction
+  document.querySelectorAll('.note-card').forEach(card => {
+    card.addEventListener('click', function() {
+      this.style.transform = 'scale(0.98)';
+      setTimeout(() => this.style.transform = '', 150);
+    });
+  });
+</script>
+
+</body>
+</html>

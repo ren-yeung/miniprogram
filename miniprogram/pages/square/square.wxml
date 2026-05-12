@@ -1,0 +1,150 @@
+<!--
+  广场页 - pages/square/square.wxml
+-->
+<view class="square-page">
+  
+  <!-- 自定义导航栏 - 标题行与胶囊对齐 -->
+  <view 
+    class="nav-bar-container"
+    style="padding-top: {{statusBarHeight}}px;"
+  >
+    <!-- 标题行：与胶囊按钮同一行 -->
+    <view class="nav-bar-title" style="height: {{menuButtonHeight}}px;">
+      <view class="logo">
+        <text class="logo-text">暖宠广场</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <scroll-view 
+    class="content" 
+    scroll-y 
+    enable-back-to-top
+    refresher-enabled
+    bindrefresherrefresh="onPullDownRefresh"
+  >
+    <!-- 分类Tab -->
+    <scroll-view class="tab-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
+      <view class="tab-list">
+        <block wx:for="{{squareTabs}}" wx:key="id">
+          <view 
+            class="tab-item {{item.active ? 'active' : ''}}"
+            data-id="{{item.id}}"
+            bindtap="onTabTap"
+          >
+            <text>{{item.name}}</text>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+
+    <view class="masonry-container">
+      <!-- 左列 -->
+      <view class="masonry-column left-column">
+        <block wx:for="{{leftPosts}}" wx:key="id">
+          <view 
+            class="post-card"
+            data-id="{{item.id}}"
+            bindtap="onPostTap"
+          >
+            <view class="post-tag" wx:if="{{item.tag}}">{{item.tag}}</view>
+            <image 
+              class="post-image" 
+              src="{{item.images[0]}}" 
+              mode="widthFix"
+              lazy-load
+            />
+            <view class="post-info">
+              <text class="post-title">{{item.title}}</text>
+              <view class="post-meta">
+                <image class="author-avatar" src="{{item.avatar}}" mode="aspectFill" />
+                <text class="author-name">{{item.author}}</text>
+                <view class="post-actions">
+                  <view class="action-item" catchtap="onLikeTap" data-id="{{item.id}}">
+                    <text class="action-icon">♥</text>
+                    <text class="action-count">{{item.likes}}</text>
+                  </view>
+                  <view class="action-item">
+                    <text class="action-icon">💬</text>
+                    <text class="action-count">{{item.comments}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+      
+      <!-- 右列 -->
+      <view class="masonry-column right-column">
+        <block wx:for="{{rightPosts}}" wx:key="id">
+          <view 
+            class="post-card"
+            data-id="{{item.id}}"
+            bindtap="onPostTap"
+          >
+            <view class="post-tag" wx:if="{{item.tag}}">{{item.tag}}</view>
+            <image 
+              class="post-image" 
+              src="{{item.images[0]}}" 
+              mode="widthFix"
+              lazy-load
+            />
+            <view class="post-info">
+              <text class="post-title">{{item.title}}</text>
+              <view class="post-meta">
+                <image class="author-avatar" src="{{item.avatar}}" mode="aspectFill" />
+                <text class="author-name">{{item.author}}</text>
+                <view class="post-actions">
+                  <view class="action-item" catchtap="onLikeTap" data-id="{{item.id}}">
+                    <text class="action-icon">♥</text>
+                    <text class="action-count">{{item.likes}}</text>
+                  </view>
+                  <view class="action-item">
+                    <text class="action-icon">💬</text>
+                    <text class="action-count">{{item.comments}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 底部提示 -->
+    <view class="bottom-tip" wx:if="{{!hasMore}}">
+      <text>— 没有更多内容了 —</text>
+    </view>
+  </scroll-view>
+
+  <!-- 发布按钮 -->
+  <view class="publish-btn" bindtap="onPublishTap">
+    <text>+</text>
+  </view>
+
+  <!-- 发布选择面板 -->
+  <view class="publish-sheet {{showPublishSheet ? 'show' : ''}}" catchtap="onClosePublish">
+    <view class="publish-panel" catchtap="">
+      <view class="panel-header">
+        <text>发布内容</text>
+        <text class="close-btn" catchtap="onClosePublish">✕</text>
+      </view>
+      <view class="publish-options">
+        <block wx:for="{{publishOptions}}" wx:key="id">
+          <view 
+            class="publish-option"
+            data-type="{{item.id}}"
+            catchtap="onSelectPublish"
+          >
+            <view class="option-icon" style="background: {{item.color}}">
+              <text>{{item.icon}}</text>
+            </view>
+            <text class="option-name">{{item.name}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+</view>

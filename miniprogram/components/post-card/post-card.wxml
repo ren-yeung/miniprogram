@@ -1,0 +1,59 @@
+<!--
+  @file 帖子卡片组件模板
+  瀑布流卡片组件
+-->
+<view 
+  class="post-card {{cardTapAnimating ? 'card-tap' : ''}}"
+  bindtap="onCardTap"
+>
+  <!-- 图片区域 -->
+  <view class="card-image-wrapper">
+    <image 
+      class="card-image"
+      src="{{post.image}}"
+      mode="aspectFill"
+      lazy-load
+      bindload="onImageLoad"
+      binderror="onImageError"
+    />
+    <!-- 分类标签 -->
+    <view 
+      class="category-tag"
+      style="background-color: {{post.categoryColor}};"
+    >
+      <text class="category-text">{{post.categoryName}}</text>
+    </view>
+  </view>
+  
+  <!-- 内容区域 -->
+  <view class="card-content">
+    <!-- 标题 -->
+    <view class="card-title">
+      <text class="title-text">{{post.title}}</text>
+    </view>
+    
+    <!-- 底部信息栏 -->
+    <view class="card-footer">
+      <!-- 用户信息 -->
+      <view class="user-info">
+        <image 
+          class="user-avatar"
+          src="{{post.user.avatar}}"
+          mode="aspectFill"
+        />
+        <text class="user-name">{{post.user.name}}</text>
+      </view>
+      
+      <!-- 点赞按钮 -->
+      <view 
+        class="like-btn {{post.liked ? 'liked' : ''}}"
+        catchtap="onLikeTap"
+      >
+        <view class="like-icon-wrapper {{likeAnimating ? 'heart-beat' : ''}}">
+          <text class="like-icon {{post.liked ? 'liked' : ''}}">❤</text>
+        </view>
+        <text class="like-count">{{post.likesDisplay}}</text>
+      </view>
+    </view>
+  </view>
+</view>

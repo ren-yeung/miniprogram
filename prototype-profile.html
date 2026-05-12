@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>暖宠星球 - 我的</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    * { font-family: 'Noto Sans SC', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #FFF9F5; max-width: 375px; margin: 0 auto; overflow-x: hidden; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 70px); }
+    ::-webkit-scrollbar { display: none; }
+
+    /* Profile header gradient */
+    .profile-bg {
+      background: linear-gradient(160deg, #FFF5F5 0%, #FFF9F7 40%, #F0FFF4 100%);
+    }
+
+    /* Menu items */
+    .menu-item { transition: background 0.15s; cursor: pointer; }
+    .menu-item:hover { background: rgba(0,0,0,0.02); }
+    .menu-item:active { background: rgba(0,0,0,0.05); transform: scale(0.99); }
+
+    /* Menu icon circles */
+    .menu-icon { transition: transform 0.2s; }
+    .menu-item:hover .menu-icon { transform: scale(1.1); }
+
+    /* TabBar */
+    .tabbar-item.active svg { color: #FF6B6B; }
+    .tabbar-item.active .tabbar-label { color: #FF6B6B; }
+
+    /* Stats card */
+    .stat-card { transition: all 0.2s; cursor: pointer; }
+    .stat-card:hover { transform: translateY(-1px); }
+
+    /* Badge */
+    .badge-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* VIP gradient */
+    .vip-gradient { background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    /* Section divider */
+    .section-divider { height: 1px; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== STATUS BAR ===================== -->
+<div class="h-11"></div>
+
+<!-- ===================== PROFILE HEADER ===================== -->
+<div class="profile-bg px-4 pt-3 pb-5">
+  <div class="flex items-center justify-between mb-4">
+    <span class="text-xs text-gray-400">暖宠星球</span>
+    <div class="flex items-center gap-3">
+      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8.588 14.114A6.988 6.988 0 0 1 10 14.5a6.988 6.988 0 0 1-1.412-.386"/><path d="M15.412.586A6.99 6.99 0 0 1 20.5 6.5a6.99 6.99 0 0 1-1.386 5.088"/><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"/></svg>
+      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+    </div>
+  </div>
+
+  <!-- User info row -->
+  <div class="flex items-center gap-3">
+    <!-- Avatar -->
+    <div class="relative flex-shrink-0">
+      <img src="https://i.pravatar.cc/120?img=47" class="w-18 h-18 rounded-full object-cover border-4 border-white shadow-md" style="width:72px;height:72px;" alt="">
+      <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs" style="background:linear-gradient(135deg,#FFD700,#FFA500);border:2px solid white;">⭐</div>
+    </div>
+
+    <!-- Name & UID -->
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <h1 class="text-lg font-bold text-gray-800">小美养猫日记</h1>
+        <div class="w-5 h-5 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,#FFD700,#FFA500);">
+          <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        </div>
+      </div>
+      <p class="text-xs text-gray-400 mt-0.5">UID: 1028847 · 上海市</p>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">🐱团子的专属铲屎官 | 养猫3年 | 分享养猫日常</p>
+    </div>
+
+    <!-- Edit btn -->
+    <button class="flex-shrink-0 text-xs px-3 py-1.5 rounded-full border" style="border-color:#E8D4D4;color:#FF6B6B;">
+      编辑
+    </button>
+  </div>
+
+  <!-- VIP banner -->
+  <div class="mt-4 rounded-2xl p-3 flex items-center gap-3" style="background:linear-gradient(135deg,#FFFAF0,#FFF5E0);border:1px solid #FFE0A0;">
+    <div class="flex items-center gap-1.5">
+      <span class="text-sm">👑</span>
+      <div>
+        <p class="text-xs font-medium text-gray-700">开通暖宠会员</p>
+        <p class="text-xs text-gray-400">解锁高级工具 · 无广告体验</p>
+      </div>
+    </div>
+    <button class="ml-auto text-xs px-3 py-1 rounded-full text-white flex-shrink-0" style="background:linear-gradient(135deg,#FFD700,#FFA500);">
+      立即开通
+    </button>
+  </div>
+</div>
+
+<!-- ===================== STATS ===================== -->
+<div class="px-3 -mt-3">
+  <div class="rounded-2xl p-4 bg-white shadow-sm border" style="border-color:#F5EDE8;">
+    <div class="flex items-stretch justify-around">
+
+      <div class="stat-card flex flex-col items-center gap-1 flex-1 py-1">
+        <p class="text-lg font-bold text-gray-800">1.2k</p>
+        <p class="text-xs text-gray-400">获赞</p>
+      </div>
+      <div class="w-px" style="background:#F0EDE8;"></div>
+      <div class="stat-card flex flex-col items-center gap-1 flex-1 py-1">
+        <p class="text-lg font-bold text-gray-800">328</p>
+        <p class="text-xs text-gray-400">关注</p>
+      </div>
+      <div class="w-px" style="background:#F0EDE8;"></div>
+      <div class="stat-card flex flex-col items-center gap-1 flex-1 py-1">
+        <p class="text-lg font-bold text-gray-800">856</p>
+        <p class="text-xs text-gray-400">粉丝</p>
+      </div>
+      <div class="w-px" style="background:#F0EDE8;"></div>
+      <div class="stat-card flex flex-col items-center gap-1 flex-1 py-1">
+        <p class="text-lg font-bold text-gray-800">42</p>
+        <p class="text-xs text-gray-400">笔记</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===================== WALLET CARDS ===================== -->
+<div class="px-3 mt-3">
+  <div class="flex gap-2">
+    <!-- 金币 -->
+    <div class="flex-1 rounded-2xl p-3 flex items-center gap-3" style="background:linear-gradient(135deg,#FFF9F0,#FFF5E0);border:1px solid #FFE0A0;">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style="background:#FFE0A0;">🪙</div>
+      <div>
+        <p class="text-sm font-semibold text-gray-800">168</p>
+        <p class="text-xs text-gray-500">金币</p>
+      </div>
+    </div>
+    <!-- 钱包 -->
+    <div class="flex-1 rounded-2xl p-3 flex items-center gap-3" style="background:linear-gradient(135deg,#F0FFF4,#E8F8F0);border:1px solid #C0F0D8;">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg" style="background:#C0F0D8;">💰</div>
+      <div>
+        <p class="text-sm font-semibold text-gray-800">¥ 12.50</p>
+        <p class="text-xs text-gray-500">钱包</p>
+      </div>
+    </div>
+    <!-- 消息 -->
+    <div class="flex-1 rounded-2xl p-3 flex items-center gap-3" style="background:linear-gradient(135deg,#FFF0F0,#FFE8E8);border:1px solid #FFD0D0;">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg relative" style="background:#FFD0D0;">
+        🔔
+        <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full text-white text-xs flex items-center justify-center" style="background:#FF6B6B;">3</span>
+      </div>
+      <div>
+        <p class="text-sm font-semibold text-gray-800">消息</p>
+        <p class="text-xs text-gray-500">3条未读</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MENU SECTION 1 ===================== -->
+<div class="px-3 mt-4">
+  <div class="rounded-2xl bg-white shadow-sm overflow-hidden" style="border:1px solid #F5EDE8;">
+
+    <!-- Row 1 -->
+    <div class="menu-item flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#FFF0F0;">📝</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-gray-800">我的发布</span>
+          <span class="badge-dot" style="background:#FF6B6B;"></span>
+        </div>
+        <p class="text-xs text-gray-400 mt-0.5">查看和编辑已发布的内容</p>
+      </div>
+      <span class="text-xs text-gray-300 mr-1">42篇</span>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="menu-item flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#F0FFF4;">❤️</div>
+      <div class="flex-1 min-w-0">
+        <span class="text-sm font-medium text-gray-800">我的点赞</span>
+        <p class="text-xs text-gray-400 mt-0.5">点赞收藏的内容都在这里</p>
+      </div>
+      <span class="text-xs text-gray-300 mr-1">128篇</span>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <!-- Row 3 -->
+    <div class="menu-item flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#F0F4FF;">⭐</div>
+      <div class="flex-1 min-w-0">
+        <span class="text-sm font-medium text-gray-800">我的收藏</span>
+        <p class="text-xs text-gray-400 mt-0.5">收藏感兴趣的笔记和工具</p>
+      </div>
+      <span class="text-xs text-gray-300 mr-1">67篇</span>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <!-- Row 4 -->
+    <div class="menu-item flex items-center gap-3 p-4">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#FFF9F0;">🏠</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-gray-800">我的送养</span>
+          <span class="text-xs px-1.5 py-0.5 rounded-full" style="background:#FFF0F0;color:#FF6B6B;">进行中</span>
+        </div>
+        <p class="text-xs text-gray-400 mt-0.5">管理送养和领养信息</p>
+      </div>
+      <span class="text-xs text-gray-300 mr-1">2篇</span>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== MENU SECTION 2 ===================== -->
+<div class="px-3 mt-3">
+  <div class="rounded-2xl bg-white shadow-sm overflow-hidden" style="border:1px solid #F5EDE8;">
+
+    <!-- Row 5 -->
+    <div class="menu-item flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#F5F0FF;">🏅</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-gray-800">认证中心</span>
+          <span class="text-xs px-1.5 py-0.5 rounded-full" style="background:#D0F0E0;color:#4CAF50;">已认证</span>
+        </div>
+        <p class="text-xs text-gray-400 mt-0.5">宠物达人认证 · 享受更多权益</p>
+      </div>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <!-- Row 6 -->
+    <div class="menu-item flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#FFF4F4;">🎉</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-gray-800">我的活动</span>
+          <span class="text-xs px-1.5 py-0.5 rounded-full" style="background:#FFE0E0;color:#FF6B6B;">新</span>
+        </div>
+        <p class="text-xs text-gray-400 mt-0.5">参与话题活动赢取奖励</p>
+      </div>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <!-- Row 7 -->
+    <div class="menu-item flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#F0FDF9;">🩺</div>
+      <div class="flex-1 min-w-0">
+        <span class="text-sm font-medium text-gray-800">养宠工具</span>
+        <p class="text-xs text-gray-400 mt-0.5">快速访问健康台账、计算器等工具</p>
+      </div>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <!-- Row 8 -->
+    <div class="menu-item flex items-center gap-3 p-4">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#F9F9F9;">🎁</div>
+      <div class="flex-1 min-w-0">
+        <span class="text-sm font-medium text-gray-800">邀请有礼</span>
+        <p class="text-xs text-gray-400 mt-0.5">邀请好友各得20金币</p>
+      </div>
+      <span class="text-xs px-2 py-0.5 rounded-full" style="background:#FF6B6B;color:white;">邀请</span>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== MENU SECTION 3: SUPPORT ===================== -->
+<div class="px-3 mt-3">
+  <div class="rounded-2xl bg-white shadow-sm overflow-hidden" style="border:1px solid #F5EDE8;">
+
+    <!-- Row 9 -->
+    <div class="menu-item flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#F9F9F9;">📖</div>
+      <div class="flex-1 min-w-0">
+        <span class="text-sm font-medium text-gray-800">帮助中心</span>
+      </div>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <!-- Row 10 -->
+    <div class="menu-item flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#F9F9F9;">💬</div>
+      <div class="flex-1 min-w-0">
+        <span class="text-sm font-medium text-gray-800">客服中心</span>
+        <p class="text-xs text-gray-400 mt-0.5">遇到问题？联系我们</p>
+      </div>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <!-- Row 11 -->
+    <div class="menu-item flex items-center gap-3 p-4">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg menu-icon flex-shrink-0" style="background:#F9F9F9;">ℹ️</div>
+      <div class="flex-1 min-w-0">
+        <span class="text-sm font-medium text-gray-800">关于我们</span>
+        <p class="text-xs text-gray-400 mt-0.5">版本 1.0.0 · 暖宠星球</p>
+      </div>
+      <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== LOGOUT ===================== -->
+<div class="px-3 mt-4 mb-4">
+  <button class="w-full py-3 rounded-2xl text-sm text-gray-400 border" style="border-color:#F0EDE8;background:#FFFFFF;">
+    退出登录
+  </button>
+</div>
+
+<!-- ===================== TAB BAR ===================== -->
+<div class="sticky bottom-0 w-full z-50">
+  <div class="flex items-stretch justify-around py-2 bg-white rounded-t-2xl shadow-lg border-t" style="border-color:#F5EDE8; padding-bottom:env(safe-area-inset-bottom, 0px);">
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-home.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">首页</span>
+    </button>
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-square.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">广场</span>
+    </button>
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-tools.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">平台</span>
+    </button>
+    <button class="tabbar-item active flex flex-col items-center gap-0.5 py-1 px-4">
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="tabbar-label text-xs">我的</span>
+    </button>
+  </div>
+</div>
+
+</body>
+</html>

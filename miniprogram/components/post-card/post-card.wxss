@@ -1,0 +1,156 @@
+/**
+ * @file 帖子卡片样式
+ * 瀑布流卡片组件样式
+ */
+
+/* ==================== 卡片容器 ==================== */
+.post-card {
+  background-color: #ffffff;
+  border-radius: 32rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card.card-tap {
+  transform: scale(0.98);
+}
+
+/* ==================== 图片区域 ==================== */
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.card-image {
+  width: 100%;
+  display: block;
+  background-color: #f3f4f6;
+}
+
+/* 分类标签 */
+.category-tag {
+  position: absolute;
+  top: 16rpx;
+  left: 16rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 24rpx;
+  background-color: rgba(255, 107, 107, 0.9);
+}
+
+.category-tag::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4rpx);
+}
+
+.category-text {
+  font-size: 22rpx;
+  font-weight: 500;
+  color: #ffffff;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================== 内容区域 ==================== */
+.card-content {
+  padding: 20rpx;
+}
+
+/* 标题 */
+.card-title {
+  margin-bottom: 16rpx;
+}
+
+.title-text {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #1F2937;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* ==================== 底部信息栏 ==================== */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 用户信息 */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.user-avatar {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+}
+
+.user-name {
+  font-size: 22rpx;
+  color: #6B7280;
+  max-width: 140rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==================== 点赞按钮 ==================== */
+.like-btn {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx;
+  border-radius: 20rpx;
+  transition: background-color 0.2s ease;
+}
+
+.like-btn:active {
+  background-color: #F3F4F6;
+}
+
+.like-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.like-icon {
+  font-size: 28rpx;
+  color: #9CA3AF;
+  transition: all 0.2s ease;
+}
+
+.like-icon.liked {
+  color: #FF6B6B;
+}
+
+.like-count {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+/* ==================== 心跳动画 ==================== */
+.heart-beat {
+  animation: heartBeat 0.3s ease-in-out;
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.3); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}

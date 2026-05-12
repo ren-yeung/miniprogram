@@ -1,0 +1,71 @@
+<!--
+  搜索页 - pages/search/search.wxml
+-->
+<view class="search-page">
+  <!-- 导航栏占位 - 与首页对齐 -->
+  <view 
+    class="nav-bar-placeholder"
+    style="padding-top: {{statusBarHeight}}px;"
+  >
+    <view class="nav-bar-title" style="height: {{menuButtonHeight}}px;">
+      <view class="logo">
+        <text class="logo-text">暖宠星球</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        value="{{searchKey}}"
+        placeholder="搜索笔记、商品、用户"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+        focus
+      />
+    </view>
+    <text class="cancel-btn" bindtap="onBack">取消</text>
+  </view>
+
+  <scroll-view class="content" scroll-y>
+    <!-- 热搜 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">🔥 热门搜索</text>
+      </view>
+      <view class="tags-wrap">
+        <block wx:for="{{hotSearch}}" wx:key="index">
+          <view 
+            class="tag-item"
+            data-key="{{item}}"
+            bindtap="onHotTap"
+          >
+            <text>{{item}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 搜索历史 -->
+    <view class="section" wx:if="{{historySearch.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">🕐 搜索历史</text>
+        <text class="clear-btn" bindtap="onClearHistory">清空</text>
+      </view>
+      <view class="tags-wrap">
+        <block wx:for="{{historySearch}}" wx:key="index">
+          <view 
+            class="tag-item"
+            data-key="{{item}}"
+            bindtap="onHotTap"
+          >
+            <text>{{item}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </scroll-view>
+</view>

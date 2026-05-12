@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>暖宠星球 - 首页</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    * { font-family: 'Noto Sans SC', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #FFF9F5; max-width: 375px; margin: 0 auto; padding-bottom: env(safe-area-inset-bottom, 0px); overflow-x: hidden; }
+    ::-webkit-scrollbar { display: none; }
+    .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .scroll-hide::-webkit-scrollbar { display: none; }
+
+    /* Masonry Layout */
+    .masonry { column-count: 2; column-gap: 10px; }
+    .masonry-item { break-inside: avoid; margin-bottom: 10px; }
+
+    /* Animations */
+    @keyframes heartBeat { 0%{transform:scale(1)} 14%{transform:scale(1.3)} 28%{transform:scale(1)} 42%{transform:scale(1.3)} 70%{transform:scale(1)} }
+    .heart-beat { animation: heartBeat 0.8s ease; }
+    @keyframes likeScale { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)} }
+    .like-pop { animation: likeScale 0.3s ease; }
+
+    /* Tabs underline */
+    .tab-active { color: #FF6B6B; font-weight: 600; position: relative; }
+    .tab-active::after { content:''; position:absolute; bottom:-2px; left:50%; transform:translateX(-50%); width:20px; height:3px; background:#FF6B6B; border-radius:2px; }
+
+    /* Card hover */
+    .note-card { transition: all 0.2s ease; }
+    .note-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .note-card:active { transform: scale(0.98); }
+
+    /* Banner */
+    .banner-slide { transition: transform 0.4s ease; }
+
+    /* Dot indicator */
+    .dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.5); transition: all 0.3s; }
+    .dot.active { width:16px; border-radius:3px; background:#fff; }
+
+    /* Fun icon btn */
+    .fun-icon { transition: all 0.2s; }
+    .fun-icon:active { transform: scale(0.92); }
+
+    /* Search bar */
+    .search-input:focus { outline: none; }
+
+    /* TabBar active */
+    .tabbar-item.active svg { color: #FF6B6B; }
+    .tabbar-item.active .tabbar-label { color: #FF6B6B; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== STATUS BAR ===================== -->
+<div class="h-11 bg-white"></div>
+
+<!-- ===================== HEADER ===================== -->
+<div class="sticky top-0 z-30 bg-white px-3 pb-2 shadow-sm" style="padding-top:env(safe-area-inset-top,0px);">
+  <!-- Top row: Location + Search + Message -->
+  <div class="flex items-center gap-2 mb-2">
+    <!-- Location -->
+    <div class="flex items-center gap-1 flex-shrink-0" style="min-width:60px;">
+      <svg class="w-4 h-4 text-rose-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+      <span class="text-xs font-medium text-gray-600 truncate">上海</span>
+      <svg class="w-3 h-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+    </div>
+
+    <!-- Search -->
+    <div class="flex-1 bg-gray-100 rounded-full flex items-center px-4 py-2 gap-2">
+      <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span class="text-sm text-gray-400">搜索笔记、商品、用户</span>
+    </div>
+
+    <!-- Message -->
+    <div class="relative flex-shrink-0 p-2">
+      <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
+    </div>
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="flex gap-5 overflow-x-auto scroll-hide pb-1">
+    <span class="tab-active text-sm flex-shrink-0">推荐</span>
+    <span class="text-sm text-gray-500 flex-shrink-0">🐶 狗狗</span>
+    <span class="text-sm text-gray-500 flex-shrink-0">🐱 猫咪</span>
+    <span class="text-sm text-gray-500 flex-shrink-0">🐰 兔兔</span>
+    <span class="text-sm text-gray-500 flex-shrink-0">🦜 鸟类</span>
+    <span class="text-sm text-gray-500 flex-shrink-0">🐹 仓鼠</span>
+    <span class="text-sm text-gray-500 flex-shrink-0">🏥 问诊</span>
+    <span class="text-sm text-gray-500 flex-shrink-0">🎁 好物</span>
+  </div>
+</div>
+
+<!-- ===================== BANNER ===================== -->
+<div class="px-3 pt-2">
+  <div class="relative rounded-2xl overflow-hidden" style="height:120px;">
+    <div id="bannerTrack" class="flex banner-track" style="transition:transform 0.4s;">
+      <div class="w-full flex-shrink-0 relative" style="height:120px;">
+        <img src="https://picsum.photos/seed/pet1/750/240" class="w-full h-full object-cover" alt="">
+        <div class="absolute inset-0 bg-gradient-to-r from-pink-400 to-rose-300 opacity-60"></div>
+        <div class="absolute bottom-4 left-4 text-white">
+          <p class="text-xs opacity-80">宠物福利</p>
+          <p class="text-lg font-bold">免费领养·爱心接力</p>
+          <p class="text-xs opacity-80 mt-1">已有3268位宠主参与</p>
+        </div>
+      </div>
+      <div class="w-full flex-shrink-0 relative" style="height:120px;">
+        <img src="https://picsum.photos/seed/pet2/750/240" class="w-full h-full object-cover" alt="">
+        <div class="absolute inset-0 bg-gradient-to-r from-teal-400 to-emerald-300 opacity-60"></div>
+        <div class="absolute bottom-4 left-4 text-white">
+          <p class="text-xs opacity-80">健康科普</p>
+          <p class="text-lg font-bold">春季驱虫全攻略</p>
+          <p class="text-xs opacity-80 mt-1">新手必看的养护指南</p>
+        </div>
+      </div>
+      <div class="w-full flex-shrink-0 relative" style="height:120px;">
+        <img src="https://picsum.photos/seed/pet3/750/240" class="w-full h-full object-cover" alt="">
+        <div class="absolute inset-0 bg-gradient-to-r from-amber-300 to-orange-300 opacity-60"></div>
+        <div class="absolute bottom-4 left-4 text-white">
+          <p class="text-xs opacity-80">社区活动</p>
+          <p class="text-lg font-bold">周末萌宠聚会</p>
+          <p class="text-xs opacity-80 mt-1">城市限定·免费参加</p>
+        </div>
+      </div>
+    </div>
+    <!-- Dots -->
+    <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FUNCTIONAL ICONS ===================== -->
+<div class="px-3 pt-4">
+  <div class="grid grid-cols-5 gap-2">
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#FFF0F0;">
+        💬
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">互动交流</span>
+    </div>
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#FFF9F0;">
+        🏠
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">宠物领养</span>
+    </div>
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#F0FFF4;">
+        🔍
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">走失寻主</span>
+    </div>
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#F0F4FF;">
+        🔄
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">二手交易</span>
+    </div>
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#FDF4FF;">
+        🤝
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">求助问答</span>
+    </div>
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#FFF4F4;">
+        🎉
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">萌宠聚会</span>
+    </div>
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#F0FDF9;">
+        🏥
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">宠物医院</span>
+    </div>
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#FFF9F5;">
+        ✂️
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">宠物美容</span>
+    </div>
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#F5F0FF;">
+        🍖
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">宠物食品</span>
+    </div>
+    <div class="fun-icon flex flex-col items-center gap-1.5 p-2">
+      <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl" style="background:#FFF9F9;">
+        📦
+      </div>
+      <span class="text-xs text-gray-600" style="font-size:11px;">更多</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== QUICK SERVICES ===================== -->
+<div class="px-3 pt-4">
+  <div class="flex gap-2 overflow-x-auto scroll-hide">
+    <div class="flex-shrink-0 rounded-2xl p-3 flex items-center gap-3" style="background:linear-gradient(135deg,#FFF0F0,#FFF5F5); min-width:200px;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#FFE0E0;">📖</div>
+      <div>
+        <p class="text-sm font-medium text-gray-800">养宠百科</p>
+        <p class="text-xs text-gray-500 mt-0.5">1000+篇专业内容</p>
+      </div>
+      <svg class="w-4 h-4 text-gray-400 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+    <div class="flex-shrink-0 rounded-2xl p-3 flex items-center gap-3" style="background:linear-gradient(135deg,#F0FFF4,#F5FFFC); min-width:200px;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#D0F0E0;">🔍</div>
+      <div>
+        <p class="text-sm font-medium text-gray-800">症状自查</p>
+        <p class="text-xs text-gray-500 mt-0.5">AI智能初步诊断</p>
+      </div>
+      <svg class="w-4 h-4 text-gray-400 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+    <div class="flex-shrink-0 rounded-2xl p-3 flex items-center gap-3" style="background:linear-gradient(135deg,#F0F4FF,#F5F8FF); min-width:200px;">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:#D8E4FF;">🩺</div>
+      <div>
+        <p class="text-sm font-medium text-gray-800">在线问诊</p>
+        <p class="text-xs text-gray-500 mt-0.5">专业兽医免费解答</p>
+      </div>
+      <svg class="w-4 h-4 text-gray-400 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SECTION HEADER ===================== -->
+<div class="px-3 pt-4 pb-2 flex items-center justify-between">
+  <div class="flex items-center gap-2">
+    <div class="w-1 h-5 rounded-full" style="background:#FF6B6B;"></div>
+    <h2 class="text-base font-semibold text-gray-800">热门笔记</h2>
+    <span class="text-xs px-2 py-0.5 rounded-full" style="background:#FFF0F0;color:#FF6B6B;">推荐</span>
+  </div>
+  <span class="text-xs text-gray-400 flex items-center gap-1">
+    更多
+    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+  </span>
+</div>
+
+<!-- ===================== FEED TABS ===================== -->
+<div class="px-3 flex gap-4 border-b" style="border-color:#F0EDE8;">
+  <button class="feed-tab tab-active text-sm py-2.5 flex-shrink-0" data-tab="new">最新</button>
+  <button class="feed-tab text-sm text-gray-400 py-2.5 flex-shrink-0" data-tab="nearby">附近</button>
+  <button class="feed-tab text-sm text-gray-400 py-2.5 flex-shrink-0" data-tab="互动">互动</button>
+  <button class="feed-tab text-sm text-gray-400 py-2.5 flex-shrink-0" data-tab="送养">送养</button>
+</div>
+
+<!-- ===================== MASONRY FEED ===================== -->
+<div class="px-2 pt-2 pb-2">
+  <div class="masonry" id="feedMasonry">
+
+    <!-- Card 1 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/cat1/400/520" class="w-full object-cover" style="height:180px;" alt="" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(255,107,107,0.85);backdrop-filter:blur(4px);">🐱 猫咪</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">第一次带猫咪去打疫苗，没想到团子这么乖！医生都夸它性格好~</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=1" class="w-6 h-6 rounded-full object-cover">
+            <span class="text-xs text-gray-500">小美养猫日记</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="like-btn flex items-center gap-1" data-likes="234">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">234</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/dog1/400/320" class="w-full object-cover" style="height:140px;" alt="" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(255,142,196,0.85);backdrop-filter:blur(4px);">🐶 狗狗</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">金毛旺财3岁了，最近学会了好多技能，给大家表演一下"坐下"和"握手"！</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=5" class="w-6 h-6 rounded-full object-cover">
+            <span class="text-xs text-gray-500">旺财主人</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="like-btn flex items-center gap-1" data-likes="189">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">189</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/bunny1/400/480" class="w-full object-cover" style="height:200px;" alt="" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(179,136,255,0.85);backdrop-filter:blur(4px);">🐰 兔兔</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">兔兔到家第一周！它叫棉花糖，已经学会用兔砂盆了，特别爱干净～</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=9" class="w-6 h-6 rounded-full object-cover">
+            <span class="text-xs text-gray-500">棉花糖の窝</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="like-btn flex items-center gap-1" data-likes="456">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">456</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/food1/400/380" class="w-full object-cover" style="height:160px;" alt="" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(127,216,166,0.85);backdrop-filter:blur(4px);">🍖 经验</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">自制猫饭食谱分享｜猫咪吃了半年毛发超顺滑，成本低营养高！附详细配方</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=12" class="w-6 h-6 rounded-full object-cover">
+            <span class="text-xs text-gray-500">铲屎官日记</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="like-btn flex items-center gap-1" data-likes="892">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">892</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/hamster1/400/420" class="w-full object-cover" style="height:175px;" alt="" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(255,179,102,0.85);backdrop-filter:blur(4px);">🐹 仓鼠</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">仓鼠合笼指南🐹不是说仓鼠不能合笼吗？我家的居然相处得很好！</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=18" class="w-6 h-6 rounded-full object-cover">
+            <span class="text-xs text-gray-500">小仓饲养员</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="like-btn flex items-center gap-1" data-likes="127">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">127</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/adopt1/400/500" class="w-full object-cover" style="height:220px;" alt="" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:#FF6B6B;backdrop-filter:blur(4px);">🏠 送养</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">【免费领养】2个月小奶狗求好心人领养！坐标浦东，已打一针疫苗</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=22" class="w-6 h-6 rounded-full object-cover">
+            <span class="text-xs text-gray-500">宠物救助站</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="like-btn flex items-center gap-1" data-likes="1.2k">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">1.2k</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/cat2/400/360" class="w-full object-cover" style="height:150px;" alt="" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(255,107,107,0.85);backdrop-filter:blur(4px);">🐱 猫咪</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">布偶猫新手喂养攻略｜布偶肠胃弱？这几种粮千万别乱喂！</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=25" class="w-6 h-6 rounded-full object-cover">
+            <span class="text-xs text-gray-500">布偶星球</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="like-btn flex items-center gap-1" data-likes="567">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">567</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 8 -->
+    <div class="masonry-item note-card rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      <div class="relative">
+        <img src="https://picsum.photos/seed/ask1/400/440" class="w-full object-cover" style="height:185px;" alt="" loading="lazy">
+        <span class="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-full text-white" style="background:rgba(253,244,255,0.9);backdrop-filter:blur(4px);color:#7C3AED;">🤝 求助</span>
+      </div>
+      <div class="p-3">
+        <p class="text-sm font-medium text-gray-800 leading-snug line-clamp-3">求助！猫咪突然不吃东西还呕吐是怎么回事？已经第三天了😭</p>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center gap-1.5">
+            <img src="https://i.pravatar.cc/32?img=30" class="w-6 h-6 rounded-full object-cover">
+            <span class="text-xs text-gray-500">焦虑铲屎官</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="like-btn flex items-center gap-1" data-likes="23">
+              <svg class="w-4 h-4 text-gray-400 liked-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="text-xs text-gray-400 like-count">23</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== AD BANNER ===================== -->
+<div class="px-3 pb-3">
+  <div class="rounded-2xl overflow-hidden relative" style="height:72px;">
+    <img src="https://picsum.photos/seed/ad1/750/144" class="w-full h-full object-cover" alt="" loading="lazy">
+    <div class="absolute inset-0 bg-gradient-to-r from-pink-100 to-rose-50 opacity-70"></div>
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+      <p class="text-xs text-gray-500">广告</p>
+      <p class="text-sm font-medium text-gray-700 mt-1">暖宠星球 × 宠物保险</p>
+      <p class="text-xs text-gray-400 mt-0.5">首月1元，保障宠物一生</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LOAD MORE ===================== -->
+<div class="px-3 pb-20 text-center">
+  <p class="text-xs text-gray-400 py-4">— 到底了，看看其他的吧 —</p>
+</div>
+
+<!-- ===================== TAB BAR ===================== -->
+<div class="sticky bottom-0 w-full z-50">
+  <div class="flex items-stretch justify-around py-2 bg-white rounded-t-2xl shadow-lg border-t" style="border-color:#F5EDE8; padding-bottom:env(safe-area-inset-bottom, 0px);">
+    <button class="tabbar-item active flex flex-col items-center gap-0.5 py-1 px-4">
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span class="tabbar-label text-xs">首页</span>
+    </button>
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-square.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">广场</span>
+    </button>
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-tools.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">平台</span>
+    </button>
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-profile.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">我的</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+  // Banner auto-scroll
+  let bannerIndex = 0;
+  const track = document.getElementById('bannerTrack');
+  const dots = document.querySelectorAll('.dot');
+  function autoBanner() {
+    bannerIndex = (bannerIndex + 1) % 3;
+    track.style.transform = `translateX(-${bannerIndex * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === bannerIndex));
+  }
+  let bannerTimer = setInterval(autoBanner, 4000);
+
+  // Like button
+  document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const icon = this.querySelector('.liked-icon');
+      const count = this.querySelector('.like-count');
+      const isLiked = icon.getAttribute('fill') === 'currentColor';
+      
+      if (!isLiked) {
+        icon.setAttribute('fill', 'currentColor');
+        icon.style.color = '#FF6B6B';
+        count.style.color = '#FF6B6B';
+        count.textContent = parseInt(count.textContent) + 1;
+        this.classList.add('like-pop');
+        setTimeout(() => this.classList.remove('like-pop'), 300);
+      } else {
+        icon.setAttribute('fill', 'none');
+        icon.style.color = '#9CA3AF';
+        count.style.color = '#9CA3AF';
+        count.textContent = parseInt(count.textContent) - 1;
+      }
+    });
+  });
+
+  // Category tabs
+  document.querySelectorAll('.tab-active').forEach(el => {
+    if (el.classList.contains('text-sm')) {
+      // category tabs in header - these are not interactive in prototype
+    }
+  });
+
+  // Feed tabs
+  document.querySelectorAll('.feed-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.feed-tab').forEach(t => {
+        t.classList.remove('tab-active');
+        t.classList.add('text-gray-400');
+        t.classList.remove('text-sm', 'font-semibold');
+      });
+      this.classList.add('tab-active', 'text-sm', 'font-semibold');
+      this.classList.remove('text-gray-400');
+    });
+  });
+
+  // Note cards click
+  document.querySelectorAll('.note-card').forEach(card => {
+    card.addEventListener('click', function() {
+      this.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        this.style.transform = '';
+      }, 150);
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暖宠星球 - 后台管理系统</title>
+    <script src="tailwind.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: {
+                            50: '#fff5f5',
+                            100: '#ffe3e3',
+                            200: '#ffc9c9',
+                            300: '#ffa8a8',
+                            400: '#ff8787',
+                            500: '#ff6b6b',
+                            600: '#fa5252',
+                            700: '#f03e3e',
+                        },
+                        warm: {
+                            50: '#fef9f3',
+                            100: '#fdf3e7',
+                            200: '#fbe7d1',
+                            300: '#f9d5a7',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        .sidebar-glass {
+            background: linear-gradient(180deg, #1e1e2e 0%, #2d2d44 100%);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-warm-50 to-orange-50 min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+        <!-- 侧边栏 -->
+        <aside id="sidebar" class="sidebar-glass w-64 flex flex-col transition-all duration-300 z-20 fixed lg:relative h-full">
+            <!-- Logo -->
+            <div class="p-6 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-coral-500 to-orange-400 rounded-xl flex items-center justify-center shadow-lg">
+                        <span class="text-white text-xl">🐾</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">暖宠星球</h1>
+                        <p class="text-xs text-gray-400">后台管理系统</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导航菜单 -->
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-hide">
+                <a href="#" onclick="showPage('dashboard')" data-page="dashboard" class="nav-item flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span>数据概览</span>
+                </a>
+                <a href="#" onclick="showPage('users')" data-page="users" class="nav-item flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <span>用户管理</span>
+                    <span class="ml-auto bg-coral-500 text-white text-xs px-2 py-0.5 rounded-full">128</span>
+                </a>
+                <a href="#" onclick="showPage('content')" data-page="content" class="nav-item flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <span>内容管理</span>
+                </a>
+                <a href="#" onclick="showPage('comments')" data-page="comments" class="nav-item flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    <span>评论管理</span>
+                    <span class="ml-auto bg-yellow-500 text-white text-xs px-2 py-0.5 rounded-full">23</span>
+                </a>
+                <a href="#" onclick="showPage('reports')" data-page="reports" class="nav-item flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <span>举报处理</span>
+                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">8</span>
+                </a>
+                <a href="#" onclick="showPage('products')" data-page="products" class="nav-item flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                    </svg>
+                    <span>商品管理</span>
+                </a>
+                <a href="#" onclick="showPage('adoption')" data-page="adoption" class="nav-item flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    <span>领养管理</span>
+                    <span class="ml-auto bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">15</span>
+                </a>
+                <a href="#" onclick="showPage('operations')" data-page="operations" class="nav-item flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                    </svg>
+                    <span>运营管理</span>
+                </a>
+                <a href="#" onclick="showPage('settings')" data-page="settings" class="nav-item flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>系统设置</span>
+                </a>
+            </nav>
+
+            <!-- 折叠按钮 -->
+            <button onclick="toggleSidebar()" class="lg:hidden p-4 text-gray-400 hover:text-white border-t border-white/10">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
+                </svg>
+            </button>
+
+            <!-- 用户信息 -->
+            <div class="p-4 border-t border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-coral-400 to-orange-400 rounded-full flex items-center justify-center text-white font-bold">
+                        A
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-white truncate">管理员小明</div>
+                        <div class="text-xs text-gray-400 truncate">admin@warmpet.com</div>
+                    </div>
+                    <button class="p-2 text-gray-400 hover:text-white transition-colors" title="退出登录">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="flex-1 overflow-y-auto lg:ml-0">
+            <!-- 顶部导航 -->
+            <header class="glass-effect border-b border-gray-200 sticky top-0 z-10">
+                <div class="px-6 py-4 flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <button onclick="toggleSidebar()" class="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                        <div>
+                            <h1 id="pageTitle" class="text-2xl font-bold text-gray-800">数据概览</h1>
+                            <p id="pageDesc" class="text-gray-500 text-sm">查看平台核心数据与运营指标</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <!-- 全局搜索 -->
+                        <div class="relative hidden md:block">
+                            <input type="text" placeholder="搜索用户、内容、商品..." class="pl-10 pr-4 py-2 bg-gray-100 border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500 w-64 transition-all">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <!-- 通知 -->
+                        <button class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                            </svg>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-coral-500 rounded-full animate-pulse"></span>
+                        </button>
+                        <!-- 日期选择 -->
+                        <div class="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-xl text-sm text-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <span>2025年1月15日</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 页面内容容器 -->
+            <div id="pageContent" class="p-6 animate-fadeIn">
+                <!-- 内容由JS动态渲染 -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mock数据
+        const mockData = {
+            dashboard: {
+                stats: [
+                    { label: '总用户数', value: '12,847', change: '+12.5%', positive: true, icon: '👥', color: 'from-blue-500 to-blue-600' },
+                    { label: '今日发帖', value: '1,234', change: '+8.2%', positive: true, icon: '📝', color: 'from-purple-500 to-purple-600' },
+                    { label: '待审核帖', value: '156', change: '-3.1%', positive: false, icon: '⏰', color: 'from-coral-500 to-orange-500' },
+                    { label: '商品订单', value: '892', change: '+15.3%', positive: true, icon: '🛒', color: 'from-green-500 to-emerald-500' }
+                ],
+                charts: [
+                    { name: '活跃用户', data: [65, 72, 68, 85, 92, 88, 95, 102, 98, 110, 115, 120] },
+                    { name: '发帖量', data: [45, 52, 48, 62, 70, 65, 75, 80, 72, 85, 90, 95] }
+                ],
+                recentPosts: [
+                    { id: 1, user: '铲屎官小王', avatar: '🐱', content: '今天带团子去打了疫苗，第一次这么乖！', likes: 234, comments: 45, time: '5分钟前', status: '正常' },
+                    { id: 2, user: '金毛爱好者', avatar: '🐕', content: '我家旺财学会握手了，开心！教程附上...', likes: 567, comments: 89, time: '12分钟前', status: '置顶' },
+                    { id: 3, user: '仓鼠铲屎官', avatar: '🐹', content: '小布丁今天越狱了，满屋子找...', likes: 123, comments: 34, time: '30分钟前', status: '正常' }
+                ],
+                pendingAdoptions: [
+                    { id: 1, pet: '橘猫弟弟', age: '3个月', location: '上海浦东', status: '待审核' },
+                    { id: 2, pet: '柯基妹妹', age: '6个月', location: '北京朝阳', status: '待审核' },
+                    { id: 3, pet: '英短蓝白', age: '1岁', location: '深圳南山', status: '待审核' }
+                ]
+            },
+            users: [
+                { id: 1, nickname: '铲屎官小王', avatar: '🐱', phone: '138****1234', pets: '1只猫', posts: 45, followers: 234, status: '正常', joinDate: '2024-06-15' },
+                { id: 2, nickname: '金毛爱好者', avatar: '🐕', phone: '139****5678', pets: '2只狗', posts: 128, followers: 892, status: '正常', joinDate: '2024-03-22' },
+                { id: 3, nickname: '萌兔主', avatar: '🐰', phone: '136****9012', pets: '3只兔', posts: 67, followers: 456, status: '正常', joinDate: '2024-08-10' },
+                { id: 4, nickname: '仓鼠铲屎官', avatar: '🐹', phone: '137****3456', pets: '5只仓鼠', posts: 234, followers: 1234, status: '封禁', joinDate: '2024-01-05' },
+                { id: 5, nickname: '橘猫控', avatar: '🐱', phone: '135****7890', pets: '2只猫', posts: 89, followers: 567, status: '正常', joinDate: '2024-09-18' },
+                { id: 6, nickname: '二哈铲屎官', avatar: '🐶', phone: '133****2345', pets: '1只哈士奇', posts: 156, followers: 789, status: '正常', joinDate: '2024-04-30' }
+            ],
+            content: [
+                { id: 1, user: '铲屎官小王', title: '带团子打疫苗全记录', cover: '🐱', likes: 234, comments: 45, status: '已通过', category: '晒宠', time: '2025-01-15 10:30' },
+                { id: 2, user: '金毛爱好者', title: '旺财学会握手教程', cover: '🐕', likes: 567, comments: 89, status: '待审核', category: '经验', time: '2025-01-15 11:00' },
+                { id: 3, user: '求助达人', title: '猫咪挑食怎么办？', cover: '❓', likes: 89, comments: 123, status: '待审核', category: '求助', time: '2025-01-15 11:30' },
+                { id: 4, user: '送养人小李', title: '免费领养小橘猫', cover: '🏠', likes: 345, comments: 67, status: '已通过', category: '送养', time: '2025-01-14 14:20' },
+                { id: 5, user: '宠物医生老张', title: '猫咪常见疾病预防', cover: '🏥', likes: 789, comments: 156, status: '已通过', category: '经验', time: '2025-01-14 16:45' },
+                { id: 6, user: '搞笑宠主', title: '我家二哈拆家日常', cover: '😂', likes: 1234, comments: 234, status: '已通过', category: '晒宠', time: '2025-01-14 18:00' }
+            ],
+            comments: [
+                { id: 1, post: '带团子打疫苗全记录', user: '猫奴一号', content: '太可爱了！团子好乖呀~', time: '5分钟前', likes: 12, status: '正常' },
+                { id: 2, post: '旺财学会握手教程', user: '训狗新手', content: '跟着教程试了真的有效果！', time: '12分钟前', likes: 34, status: '正常' },
+                { id: 3, post: '猫咪挑食怎么办？', user: '焦急的铲屎官', content: '试试换换猫粮牌子？', time: '20分钟前', likes: 8, status: '正常' },
+                { id: 4, post: '免费领养小橘猫', user: '想养猫的人', content: '请问还可以在吗？很想领养', time: '30分钟前', likes: 5, status: '正常' },
+                { id: 5, post: '我家二哈拆家日常', user: '同款二哈', content: '哈哈哈太真实了，我家也是这样', time: '45分钟前', likes: 56, status: '正常' },
+                { id: 6, post: '猫咪常见疾病预防', user: '新手猫奴', content: '收藏了！写得真详细', time: '1小时前', likes: 23, status: '正常' }
+            ],
+            reports: [
+                { id: 1, reporter: '热心用户A', reported: '营销号XX', reason: '垃圾广告', content: '频繁发布商品广告', time: '10分钟前', status: '待处理' },
+                { id: 2, reporter: '猫奴一号', reported: '匿名用户', reason: '人身攻击', content: '在评论区恶意辱骂他人', time: '30分钟前', status: '待处理' },
+                { id: 3, reporter: '铲屎官小王', reported: '账号XXX', reason: '虚假信息', content: '发布虚假送养信息', time: '1小时前', status: '待处理' },
+                { id: 4, reporter: '管理员', reported: '用户YYY', reason: '违规内容', content: '发布敏感图片', time: '2小时前', status: '已处理' }
+            ],
+            products: [
+                { id: 1, name: '天然猫粮 5kg装', price: '¥168', stock: 234, sales: 1256, category: '猫粮', status: '上架中', image: '🐱' },
+                { id: 2, name: '智能宠物饮水机', price: '¥129', stock: 89, sales: 567, category: '用品', status: '上架中', image: '💧' },
+                { id: 3, name: '猫爬架 多层豪华版', price: '¥399', stock: 45, sales: 234, category: '用品', status: '上架中', image: '🏠' },
+                { id: 4, name: '狗狗零食大礼包', price: '¥89', stock: 0, sales: 890, category: '零食', status: '已下架', image: '🦴' },
+                { id: 5, name: '宠物外出背包', price: '¥199', stock: 156, sales: 345, category: '用品', status: '上架中', image: '🎒' },
+                { id: 6, name: '猫咪营养膏', price: '¥45', stock: 200, sales: 789, category: '营养品', status: '上架中', image: '💉' }
+            ],
+            adoptions: [
+                { id: 1, pet: '橘猫弟弟', breed: '中华田园猫', age: '3个月', gender: '公', location: '上海浦东', status: '待审核', contact: '138****1234', applicant: '待定' },
+                { id: 2, pet: '柯基妹妹', breed: '柯基', age: '6个月', gender: '母', location: '北京朝阳', status: '待审核', contact: '139****5678', applicant: '3人申请' },
+                { id: 3, pet: '英短蓝白', breed: '英国短毛猫', age: '1岁', gender: '公', location: '深圳南山', status: '配对中', contact: '136****9012', applicant: '张女士' },
+                { id: 4, pet: '柴犬弟弟', breed: '柴犬', age: '8个月', gender: '公', location: '广州天河', status: '已领养', contact: '137****3456', applicant: '李先生' },
+                { id: 5, pet: '布偶妹妹', breed: '布偶猫', age: '1.5岁', gender: '母', location: '杭州西湖', status: '配对中', contact: '135****7890', applicant: '王女士' }
+            ],
+            banners: [
+                { id: 1, title: '新年特惠 宠物用品5折起', image: '🎉', link: '/pages/promotion/newyear', status: '展示中', time: '2025-01-01 至 2025-02-01' },
+                { id: 2, title: '晒宠赢大奖活动', image: '🏆', link: '/pages/activity/photo', status: '展示中', time: '2025-01-10 至 2025-02-10' },
+                { id: 3, title: '免费领养日', image: '💝', link: '/pages/adoption/day', status: '展示中', time: '2025-01-15 至 2025-01-31' },
+                { id: 4, title: '宠物健康讲座', image: '🏥', link: '/pages/lecture/health', status: '已过期', time: '2024-12-01 至 2024-12-31' }
+            ],
+            activities: [
+                { id: 1, name: '2025新年晒宠大赛', status: '进行中', participants: 1234, rewards: '¥10,000奖金池', time: '2025-01-01 至 2025-02-01' },
+                { id: 2, name: '猫咪变装挑战', status: '进行中', participants: 567, rewards: '猫爬架×10', time: '2025-01-10 至 2025-01-31' },
+                { id: 3, name: '冬季宠物护理指南', status: '已结束', participants: 2345, rewards: '无', time: '2024-12-15 至 2024-12-31' }
+            ],
+            notices: [
+                { id: 1, title: '【重要】平台规范更新通知', content: '请各位用户仔细阅读新的社区规范...', status: '展示中', time: '2025-01-10' },
+                { id: 2, title: '送养信息真实性说明', content: '近期发现部分送养信息存在虚假...', status: '展示中', time: '2025-01-05' },
+                { id: 3, title: '新功能上线预告', content: '宠物健康档案功能即将上线...', status: '草稿', time: '2025-01-15' }
+            ]
+        };
+
+        // 页面配置
+        const pageConfig = {
+            dashboard: { title: '数据概览', desc: '查看平台核心数据与运营指标' },
+            users: { title: '用户管理', desc: '管理平台用户、查看用户详情' },
+            content: { title: '内容管理', desc: '审核帖子、管理内容质量' },
+            comments: { title: '评论管理', desc: '管理用户评论、维护社区氛围' },
+            reports: { title: '举报处理', desc: '处理用户举报、维护平台秩序' },
+            products: { title: '商品管理', desc: '管理商品上下架、库存与分类' },
+            adoption: { title: '领养管理', desc: '审核领养信息、跟踪领养进度' },
+            operations: { title: '运营管理', desc: '管理Banner、活动、公告' },
+            settings: { title: '系统设置', desc: '配置系统参数、权限与日志' }
+        };
+
+        // 当前页面
+        let currentPage = 'dashboard';
+
+        // 切换页面
+        function showPage(page) {
+            currentPage = page;
+            
+            // 更新导航高亮
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('bg-gradient-to-r', 'from-coral-500', 'to-orange-500', 'text-white', 'shadow-lg');
+                item.classList.add('text-gray-300');
+                if (item.dataset.page === page) {
+                    item.classList.add('bg-gradient-to-r', 'from-coral-500', 'to-orange-500', 'text-white', 'shadow-lg');
+                    item.classList.remove('text-gray-300');
+                }
+            });
+
+            // 更新页面标题
+            document.getElementById('pageTitle').textContent = pageConfig[page].title;
+            document.getElementById('pageDesc').textContent = pageConfig[page].desc;
+
+            // 渲染页面内容
+            renderPage(page);
+        }
+
+        // 渲染页面
+        function renderPage(page) {
+            const container = document.getElementById('pageContent');
+            let html = '';
+
+            switch(page) {
+                case 'dashboard':
+                    html = renderDashboard();
+                    break;
+                case 'users':
+                    html = renderUsers();
+                    break;
+                case 'content':
+                    html = renderContent();
+                    break;
+                case 'comments':
+                    html = renderComments();
+                    break;
+                case 'reports':
+                    html = renderReports();
+                    break;
+                case 'products':
+                    html = renderProducts();
+                    break;
+                case 'adoption':
+                    html = renderAdoption();
+                    break;
+                case 'operations':
+                    html = renderOperations();
+                    break;
+                case 'settings':
+                    html = renderSettings();
+                    break;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // 渲染数据概览页面
+        function renderDashboard() {
+            const data = mockData.dashboard;
+            return `
+                <!-- 统计卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    ${data.stats.map(stat => `
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center shadow-lg text-2xl">
+                                    ${stat.icon}
+                                </div>
+                                <span class="${stat.positive ? 'text-green-500' : 'text-red-500'} text-sm font-medium flex items-center gap-1">
+                                    ${stat.positive ? '↑' : '↓'} ${stat.change}
+                                </span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800 mb-1">${stat.value}</h3>
+                            <p class="text-gray-500 text-sm">${stat.label}</p>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- 图表区域 -->
+                <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                    <!-- 趋势图 -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">数据趋势</h3>
+                            <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-coral-500">
+                                <option>最近7天</option>
+                                <option>最近30天</option>
+                                <option>最近90天</option>
+                            </select>
+                        </div>
+                        <div class="h-64 flex items-end justify-around gap-2 px-4">
+                            ${data.charts[0].data.map((value, i) => `
+                                <div class="flex flex-col items-center gap-2 flex-1">
+                                    <div class="w-full bg-gradient-to-t from-coral-500 to-orange-400 rounded-t-lg transition-all hover:from-coral-600 hover:to-orange-500" style="height: ${value * 0.8}px; min-height: 20px;"></div>
+                                    <span class="text-xs text-gray-400">${['1/4', '1/5', '1/6', '1/7', '1/8', '1/9', '1/10', '1/11', '1/12', '1/13', '1/14', '1/15'][i]}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="flex justify-center gap-6 mt-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-coral-500"></div>
+                                <span class="text-sm text-gray-600">活跃用户</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-orange-400"></div>
+                                <span class="text-sm text-gray-600">发帖量</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 待办事项 -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6">待办事项</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3 p-3 bg-coral-50 rounded-xl border border-coral-100">
+                                <div class="w-8 h-8 bg-coral-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">${mockData.users.length}</div>
+                                <div>
+                                    <div class="font-medium text-gray-800">待审核用户</div>
+                                    <div class="text-xs text-gray-500">需要人工审核</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-xl border border-yellow-100">
+                                <div class="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">${mockData.reports.filter(r => r.status === '待处理').length}</div>
+                                <div>
+                                    <div class="font-medium text-gray-800">待处理举报</div>
+                                    <div class="text-xs text-gray-500">需要及时处理</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
+                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">${mockData.adoptions.filter(a => a.status === '待审核').length}</div>
+                                <div>
+                                    <div class="font-medium text-gray-800">待审核领养</div>
+                                    <div class="text-xs text-gray-500">需要确认信息</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-xl border border-purple-100">
+                                <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">${mockData.content.filter(c => c.status === '待审核').length}</div>
+                                <div>
+                                    <div class="font-medium text-gray-800">待审核帖子</div>
+                                    <div class="text-xs text-gray-500">需要内容审核</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 热门内容 & 领养信息 -->
+                <div class="grid lg:grid-cols-2 gap-6">
+                    <!-- 热门帖子 -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-gray-800">热门帖子</h3>
+                            <button onclick="showPage('content')" class="text-coral-500 text-sm hover:text-coral-600">查看全部 →</button>
+                        </div>
+                        <div class="divide-y divide-gray-100">
+                            ${data.recentPosts.map(post => `
+                                <div class="p-4 hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-coral-100 to-orange-100 rounded-full flex items-center justify-center text-xl">
+                                            ${post.avatar}
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="font-medium text-gray-800">${post.user}</span>
+                                                ${post.status === '置顶' ? '<span class="px-2 py-0.5 bg-coral-100 text-coral-600 text-xs rounded-full">置顶</span>' : ''}
+                                            </div>
+                                            <p class="text-sm text-gray-600 truncate">${post.content}</p>
+                                            <div class="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                                                <span class="flex items-center gap-1">❤️ ${post.likes}</span>
+                                                <span class="flex items-center gap-1">💬 ${post.comments}</span>
+                                                <span>${post.time}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- 待审核领养 -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-gray-800">待审核领养</h3>
+                            <button onclick="showPage('adoption')" class="text-coral-500 text-sm hover:text-coral-600">查看全部 →</button>
+                        </div>
+                        <div class="divide-y divide-gray-100">
+                            ${data.pendingAdoptions.map(item => `
+                                <div class="p-4 hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-orange-100 to-coral-100 rounded-xl flex items-center justify-center text-2xl">
+                                                🐾
+                                            </div>
+                                            <div>
+                                                <div class="font-medium text-gray-800">${item.pet}</div>
+                                                <div class="text-sm text-gray-500">${item.age} · ${item.location}</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button class="px-3 py-1 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition-colors">通过</button>
+                                            <button class="px-3 py-1 bg-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-300 transition-colors">拒绝</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染用户管理页面
+        function renderUsers() {
+            return `
+                <!-- 筛选栏 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 mb-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="relative flex-1 min-w-[200px]">
+                            <input type="text" placeholder="搜索用户名、手机号..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <option>全部状态</option>
+                            <option>正常</option>
+                            <option>封禁</option>
+                        </select>
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <option>全部宠物类型</option>
+                            <option>猫咪</option>
+                            <option>狗狗</option>
+                            <option>其他</option>
+                        </select>
+                        <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all">搜索</button>
+                    </div>
+                </div>
+
+                <!-- 用户列表 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">手机号</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">宠物</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">发帖数</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">粉丝</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">注册时间</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                ${mockData.users.map(user => `
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-gradient-to-br from-coral-100 to-orange-100 rounded-full flex items-center justify-center text-xl">
+                                                    ${user.avatar}
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-gray-800">${user.nickname}</div>
+                                                    <div class="text-xs text-gray-400">ID: ${user.id}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">${user.phone}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">${user.pets}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">${user.posts}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">${user.followers}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 text-xs font-medium ${user.status === '正常' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} rounded-full">
+                                                ${user.status}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">${user.joinDate}</td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <button class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="查看详情">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                </button>
+                                                ${user.status === '正常' ? `
+                                                    <button class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="封禁用户">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                                                        </svg>
+                                                    </button>
+                                                ` : `
+                                                    <button class="p-2 text-green-500 hover:bg-green-50 rounded-lg transition-colors" title="解封用户">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                    </button>
+                                                `}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分页 -->
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">
+                            显示 <span class="font-medium">1</span> 到 <span class="font-medium">6</span> 共 <span class="font-medium">${mockData.users.length}</span> 条
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>上一页</button>
+                            <button class="px-3 py-2 bg-coral-500 text-white rounded-lg">1</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">3</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染内容管理页面
+        function renderContent() {
+            return `
+                <!-- 筛选栏 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 mb-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="relative flex-1 min-w-[200px]">
+                            <input type="text" placeholder="搜索帖子标题、内容..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <option>全部状态</option>
+                            <option>待审核</option>
+                            <option>已通过</option>
+                            <option>已拒绝</option>
+                        </select>
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <option>全部分类</option>
+                            <option>晒宠</option>
+                            <option>求助</option>
+                            <option>送养</option>
+                            <option>经验</option>
+                            <option>闲聊</option>
+                        </select>
+                        <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all">搜索</button>
+                    </div>
+                </div>
+
+                <!-- 内容列表 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">内容</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">作者</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">分类</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">点赞</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">评论</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时间</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                ${mockData.content.map(item => `
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-12 h-12 bg-gradient-to-br from-coral-100 to-orange-100 rounded-lg flex items-center justify-center text-xl">
+                                                    ${item.cover}
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-gray-800 max-w-[200px] truncate">${item.title}</div>
+                                                    <div class="text-xs text-gray-400">ID: ${item.id}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">${item.user}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">${item.category}</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">❤️ ${item.likes}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">💬 ${item.comments}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 text-xs font-medium rounded-full ${
+                                                item.status === '已通过' ? 'bg-green-100 text-green-700' :
+                                                item.status === '待审核' ? 'bg-yellow-100 text-yellow-700' :
+                                                'bg-red-100 text-red-700'
+                                            }">
+                                                ${item.status}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">${item.time}</td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <button class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="查看">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                </button>
+                                                ${item.status === '待审核' ? `
+                                                    <button class="p-2 text-green-500 hover:bg-green-50 rounded-lg transition-colors" title="通过">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                        </svg>
+                                                    </button>
+                                                    <button class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="拒绝">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                        </svg>
+                                                    </button>
+                                                ` : `
+                                                    <button class="p-2 text-coral-500 hover:bg-coral-50 rounded-lg transition-colors" title="置顶">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                                        </svg>
+                                                    </button>
+                                                    <button class="p-2 text-purple-500 hover:bg-purple-50 rounded-lg transition-colors" title="加精">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                                        </svg>
+                                                    </button>
+                                                `}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分页 -->
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">
+                            显示 <span class="font-medium">1</span> 到 <span class="font-medium">6</span> 共 <span class="font-medium">${mockData.content.length}</span> 条
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>上一页</button>
+                            <button class="px-3 py-2 bg-coral-500 text-white rounded-lg">1</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">3</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染评论管理页面
+        function renderComments() {
+            return `
+                <!-- 筛选栏 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 mb-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="relative flex-1 min-w-[200px]">
+                            <input type="text" placeholder="搜索评论内容..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <option>全部状态</option>
+                            <option>正常</option>
+                            <option>已删除</option>
+                        </select>
+                        <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all">搜索</button>
+                    </div>
+                </div>
+
+                <!-- 评论列表 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="divide-y divide-gray-100">
+                        ${mockData.comments.map(comment => `
+                            <div class="p-6 hover:bg-gray-50 transition-colors">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center text-lg">
+                                        👤
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-3 mb-2">
+                                            <span class="font-medium text-gray-800">${comment.user}</span>
+                                            <span class="text-sm text-gray-400">评论于</span>
+                                            <span class="text-sm text-coral-500">《${comment.post}》</span>
+                                            <span class="px-2 py-0.5 text-xs ${
+                                                comment.status === '正常' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                            } rounded-full">${comment.status}</span>
+                                        </div>
+                                        <p class="text-gray-600 mb-3">${comment.content}</p>
+                                        <div class="flex items-center gap-4 text-sm text-gray-400">
+                                            <span>${comment.time}</span>
+                                            <span class="flex items-center gap-1">❤️ ${comment.likes}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="查看原帖">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="删除评论">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- 分页 -->
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">
+                            显示 <span class="font-medium">1</span> 到 <span class="font-medium">6</span> 共 <span class="font-medium">${mockData.comments.length}</span> 条
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>上一页</button>
+                            <button class="px-3 py-2 bg-coral-500 text-white rounded-lg">1</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染举报处理页面
+        function renderReports() {
+            return `
+                <!-- 筛选栏 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 mb-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="relative flex-1 min-w-[200px]">
+                            <input type="text" placeholder="搜索举报内容..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <option>全部状态</option>
+                            <option>待处理</option>
+                            <option>已处理</option>
+                        </select>
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <option>全部类型</option>
+                            <option>垃圾广告</option>
+                            <option>人身攻击</option>
+                            <option>虚假信息</option>
+                            <option>违规内容</option>
+                        </select>
+                        <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all">搜索</button>
+                    </div>
+                </div>
+
+                <!-- 举报列表 -->
+                <div class="space-y-4">
+                    ${mockData.reports.map(report => `
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 ${
+                                        report.status === '待处理' ? 'bg-red-100' : 'bg-green-100'
+                                    } rounded-xl flex items-center justify-center">
+                                        <svg class="w-6 h-6 ${
+                                            report.status === '待处理' ? 'text-red-500' : 'text-green-500'
+                                        }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-3 mb-2">
+                                            <span class="font-bold text-gray-800">${report.reason}</span>
+                                            <span class="px-3 py-1 text-xs font-medium ${
+                                                report.status === '待处理' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'
+                                            } rounded-full">${report.status}</span>
+                                        </div>
+                                        <div class="text-sm text-gray-600 mb-2">
+                                            <span class="text-gray-400">举报人：</span>${report.reporter}
+                                            <span class="mx-2">→</span>
+                                            <span class="text-gray-400">被举报：</span>${report.reported}
+                                        </div>
+                                        <p class="text-sm text-gray-500 mb-2">${report.content}</p>
+                                        <div class="flex items-center gap-4 text-xs text-gray-400">
+                                            <span>举报时间：${report.time}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    ${report.status === '待处理' ? `
+                                        <button class="px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition-colors">通过</button>
+                                        <button class="px-4 py-2 bg-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-300 transition-colors">驳回</button>
+                                    ` : `
+                                        <span class="text-green-500 text-sm font-medium">已处理完毕</span>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // 渲染商品管理页面
+        function renderProducts() {
+            return `
+                <!-- 顶部操作栏 -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            添加商品
+                        </button>
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <option>全部分类</option>
+                            <option>猫粮</option>
+                            <option>狗粮</option>
+                            <option>零食</option>
+                            <option>用品</option>
+                            <option>营养品</option>
+                        </select>
+                    </div>
+                    <div class="relative">
+                        <input type="text" placeholder="搜索商品..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500 w-64">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- 商品列表 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">商品</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">分类</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">价格</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">库存</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">销量</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                ${mockData.products.map(product => `
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-12 h-12 bg-gradient-to-br from-coral-100 to-orange-100 rounded-lg flex items-center justify-center text-2xl">
+                                                    ${product.image}
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-gray-800">${product.name}</div>
+                                                    <div class="text-xs text-gray-400">ID: ${product.id}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">${product.category}</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-800">${product.price}</td>
+                                        <td class="px-6 py-4 text-sm ${product.stock === 0 ? 'text-red-500' : 'text-gray-600'}">${product.stock}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">${product.sales}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 text-xs font-medium ${
+                                                product.status === '上架中' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                                            } rounded-full">
+                                                ${product.status}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <button class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="编辑">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                </button>
+                                                ${product.status === '上架中' ? `
+                                                    <button class="p-2 text-yellow-500 hover:bg-yellow-50 rounded-lg transition-colors" title="下架">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H10"></path>
+                                                        </svg>
+                                                    </button>
+                                                ` : `
+                                                    <button class="p-2 text-green-500 hover:bg-green-50 rounded-lg transition-colors" title="上架">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                                        </svg>
+                                                    </button>
+                                                `}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分页 -->
+                    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                        <div class="text-sm text-gray-500">
+                            显示 <span class="font-medium">1</span> 到 <span class="font-medium">6</span> 共 <span class="font-medium">${mockData.products.length}</span> 条
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>上一页</button>
+                            <button class="px-3 py-2 bg-coral-500 text-white rounded-lg">1</button>
+                            <button class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染领养管理页面
+        function renderAdoption() {
+            return `
+                <!-- 筛选栏 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 mb-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="relative flex-1 min-w-[200px]">
+                            <input type="text" placeholder="搜索宠物名称..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <select class="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <option>全部状态</option>
+                            <option>待审核</option>
+                            <option>配对中</option>
+                            <option>已领养</option>
+                        </select>
+                        <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all">搜索</button>
+                    </div>
+                </div>
+
+                <!-- 领养卡片 -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${mockData.adoptions.map(item => `
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all">
+                            <div class="h-32 bg-gradient-to-br from-orange-100 to-coral-100 flex items-center justify-center">
+                                <span class="text-6xl">🐾</span>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-lg font-bold text-gray-800">${item.pet}</h3>
+                                    <span class="px-3 py-1 text-xs font-medium ${
+                                        item.status === '待审核' ? 'bg-yellow-100 text-yellow-700' :
+                                        item.status === '配对中' ? 'bg-blue-100 text-blue-700' :
+                                        'bg-green-100 text-green-700'
+                                    } rounded-full">${item.status}</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
+                                    <div>📋 ${item.breed}</div>
+                                    <div>🎂 ${item.age}</div>
+                                    <div>⚧ ${item.gender === '公' ? '♂' : '♀'}${item.gender}</div>
+                                    <div>📍 ${item.location}</div>
+                                </div>
+                                <div class="text-sm text-gray-500 mb-4">
+                                    <div>📞 ${item.contact}</div>
+                                    <div>👤 ${item.applicant}</div>
+                                </div>
+                                <div class="flex gap-2">
+                                    ${item.status === '待审核' ? `
+                                        <button class="flex-1 px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition-colors">通过</button>
+                                        <button class="flex-1 px-4 py-2 bg-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-300 transition-colors">拒绝</button>
+                                    ` : `
+                                        <button class="flex-1 px-4 py-2 bg-coral-500 text-white text-sm rounded-lg hover:bg-coral-600 transition-colors">查看详情</button>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // 渲染运营管理页面
+        function renderOperations() {
+            return `
+                <!-- Tab导航 -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 mb-6">
+                    <div class="flex border-b border-gray-200">
+                        <button onclick="showOperationTab('banners')" id="tab-banners" class="operation-tab px-6 py-4 text-coral-500 border-b-2 border-coral-500 font-medium">Banner管理</button>
+                        <button onclick="showOperationTab('activities')" id="tab-activities" class="operation-tab px-6 py-4 text-gray-500 hover:text-gray-700">活动管理</button>
+                        <button onclick="showOperationTab('notices')" id="tab-notices" class="operation-tab px-6 py-4 text-gray-500 hover:text-gray-700">公告管理</button>
+                    </div>
+                </div>
+
+                <!-- Banner管理 -->
+                <div id="content-banners">
+                    <div class="flex items-center justify-between mb-6">
+                        <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            添加Banner
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Banner</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">链接</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时间</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                ${mockData.banners.map(banner => `
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-16 h-10 bg-gradient-to-br from-coral-100 to-orange-100 rounded-lg flex items-center justify-center text-xl">
+                                                    ${banner.image}
+                                                </div>
+                                                <span class="font-medium text-gray-800">${banner.title}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">${banner.link}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 text-xs font-medium ${
+                                                banner.status === '展示中' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                                            } rounded-full">${banner.status}</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">${banner.time}</td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <button class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                </button>
+                                                <button class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 活动管理 -->
+                <div id="content-activities" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            创建活动
+                        </button>
+                    </div>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${mockData.activities.map(activity => `
+                            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                                <div class="h-24 bg-gradient-to-br from-purple-100 to-coral-100 flex items-center justify-center">
+                                    <span class="text-4xl">${activity.status === '进行中' ? '🎯' : '✓'}</span>
+                                </div>
+                                <div class="p-5">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h3 class="font-bold text-gray-800">${activity.name}</h3>
+                                        <span class="px-3 py-1 text-xs font-medium ${
+                                            activity.status === '进行中' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                                        } rounded-full">${activity.status}</span>
+                                    </div>
+                                    <div class="text-sm text-gray-600 mb-2">
+                                        <span class="text-gray-400">参与人数：</span>${activity.participants}
+                                    </div>
+                                    <div class="text-sm text-gray-600 mb-4">
+                                        <span class="text-gray-400">奖励：</span>${activity.rewards}
+                                    </div>
+                                    <div class="text-sm text-gray-500 mb-4">${activity.time}</div>
+                                    <button class="w-full px-4 py-2 bg-coral-500 text-white text-sm rounded-lg hover:bg-coral-600 transition-colors">管理活动</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- 公告管理 -->
+                <div id="content-notices" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            发布公告
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                        <div class="divide-y divide-gray-100">
+                            ${mockData.notices.map(notice => `
+                                <div class="p-6 hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <h3 class="font-medium text-gray-800">${notice.title}</h3>
+                                                <span class="px-2 py-0.5 text-xs ${
+                                                    notice.status === '展示中' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                                                } rounded-full">${notice.status}</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600 mb-2">${notice.content}</p>
+                                            <div class="text-xs text-gray-400">发布时间：${notice.time}</div>
+                                        </div>
+                                        <div class="flex items-center gap-2 ml-4">
+                                            <button class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                            </button>
+                                            <button class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 切换运营Tab
+        function showOperationTab(tab) {
+            document.querySelectorAll('.operation-tab').forEach(t => {
+                t.classList.remove('text-coral-500', 'border-b-2', 'border-coral-500');
+                t.classList.add('text-gray-500');
+            });
+            document.getElementById('tab-' + tab).classList.add('text-coral-500', 'border-b-2', 'border-coral-500');
+            document.getElementById('tab-' + tab).classList.remove('text-gray-500');
+
+            document.getElementById('content-banners').classList.add('hidden');
+            document.getElementById('content-activities').classList.add('hidden');
+            document.getElementById('content-notices').classList.add('hidden');
+            document.getElementById('content-' + tab).classList.remove('hidden');
+        }
+
+        // 渲染系统设置页面
+        function renderSettings() {
+            return `
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- 左侧菜单 -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4">
+                            <nav class="space-y-2">
+                                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-coral-50 text-coral-600 rounded-xl font-medium">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    基础设置
+                                </a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                    </svg>
+                                    权限管理
+                                </a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                    </svg>
+                                    安全设置
+                                </a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                    </svg>
+                                    操作日志
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- 右侧内容 -->
+                    <div class="lg:col-span-2">
+                        <!-- 基础设置 -->
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                            <h3 class="text-lg font-bold text-gray-800 mb-6">基础设置</h3>
+                            
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">平台名称</label>
+                                    <input type="text" value="暖宠星球" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">平台Logo</label>
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-16 h-16 bg-gradient-to-br from-coral-500 to-orange-400 rounded-xl flex items-center justify-center shadow-lg">
+                                            <span class="text-white text-2xl">🐾</span>
+                                        </div>
+                                        <button class="px-4 py-2 border border-gray-300 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors">更换Logo</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">平台简介</label>
+                                    <textarea rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">让养宠生活更温暖的同城宠物社区 + 随身养宠工具箱</textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">联系方式</label>
+                                    <input type="text" value="contact@warmpet.com" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">内容审核模式</label>
+                                    <div class="flex items-center gap-4">
+                                        <label class="flex items-center gap-2">
+                                            <input type="radio" name="audit" value="auto" checked class="w-4 h-4 text-coral-500">
+                                            <span class="text-gray-600">自动审核</span>
+                                        </label>
+                                        <label class="flex items-center gap-2">
+                                            <input type="radio" name="audit" value="manual" class="w-4 h-4 text-coral-500">
+                                            <span class="text-gray-600">人工审核</span>
+                                        </label>
+                                        <label class="flex items-center gap-2">
+                                            <input type="radio" name="audit" value="hybrid" class="w-4 h-4 text-coral-500">
+                                            <span class="text-gray-600">混合审核</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">热门推荐阈值</label>
+                                    <div class="flex items-center gap-4">
+                                        <input type="number" value="100" class="w-24 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-500 text-center">
+                                        <span class="text-gray-500">点赞数以上的内容将被推荐</span>
+                                    </div>
+                                </div>
+
+                                <div class="pt-4 border-t border-gray-200">
+                                    <button class="px-6 py-2 bg-gradient-to-r from-coral-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-all">保存设置</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 操作日志 -->
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mt-6">
+                            <h3 class="text-lg font-bold text-gray-800 mb-6">最近操作日志</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-medium text-gray-800">通过帖子审核</div>
+                                        <div class="text-sm text-gray-500">ID:1234 | 管理员小明 | 2025-01-15 14:30</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-medium text-gray-800">封禁用户账号</div>
+                                        <div class="text-sm text-gray-500">ID:5678 | 管理员小明 | 2025-01-15 13:45</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-medium text-gray-800">修改系统配置</div>
+                                        <div class="text-sm text-gray-500">审核模式 | 管理员小明 | 2025-01-15 10:20</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 切换侧边栏
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+            sidebar.classList.toggle('translate-x-0');
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('dashboard');
+        });
+    </script>
+</body>
+</html>

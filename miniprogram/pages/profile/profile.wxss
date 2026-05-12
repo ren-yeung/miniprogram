@@ -1,0 +1,523 @@
+/* 我的页面样式 - pages/profile/profile.wxss */
+
+/* ===================== 页面基础 ===================== */
+
+.profile-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #FFF9F5;
+}
+
+/* ===================== 自定义导航栏 ===================== */
+
+.nav-bar-container {
+  background: linear-gradient(160deg, #FFF5F5 0%, #FFF9F7 40%, #F0FFF4 100%);
+  flex-shrink: 0;
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  padding-bottom: 8rpx;
+  margin-top: 20rpx;
+}
+
+.nav-bar-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.logo-icon {
+  width: 72rpx;
+  height: 72rpx;
+  background: linear-gradient(135deg, #FF6B6B, #FF8EC4);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+}
+
+.logo-text {
+  font-size: 36rpx;
+  font-weight: 400;
+  color: #1F2937;
+}
+
+/* ===================== 滚动内容区 ===================== */
+
+.main-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.header-actions {
+  display: flex;
+  gap: 24rpx;
+}
+
+.action-icon {
+  font-size: 32rpx;
+  padding: 8rpx;
+}
+
+/* ===================== 头部区域 ===================== */
+
+.profile-header {
+  background: linear-gradient(160deg, #FFF5F5 0%, #FFF9F7 40%, #F0FFF4 100%);
+  padding: 0 24rpx 32rpx;
+}
+
+/* ===================== 已登录：用户卡片 ===================== */
+
+.user-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  margin-bottom: 24rpx;
+}
+
+.user-main {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.avatar-wrapper {
+  position: relative;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid #FFF0F0;
+}
+
+.avatar-edit-hint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40rpx;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0 0 60rpx 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+}
+
+.vip-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36rpx;
+  height: 36rpx;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18rpx;
+  border: 2rpx solid #ffffff;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #222;
+}
+
+.vip-icon {
+  font-size: 32rpx;
+}
+
+.user-uid {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.user-bio {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.edit-btn {
+  font-size: 24rpx;
+  color: #FF6B6B;
+  background: #FFF0F0;
+  padding: 12rpx 24rpx;
+  border-radius: 50rpx;
+}
+
+/* ===================== VIP Banner ===================== */
+
+.vip-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #FFF5E0, #FFE8C0);
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.vip-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.vip-icon-text {
+  font-size: 40rpx;
+}
+
+.vip-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.vip-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #8B6914;
+}
+
+.vip-desc {
+  font-size: 22rpx;
+  color: #B8860B;
+}
+
+.vip-right {
+  flex-shrink: 0;
+}
+
+.vip-btn {
+  font-size: 22rpx;
+  color: #8B6914;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  padding: 12rpx 24rpx;
+  border-radius: 50rpx;
+  font-weight: 500;
+}
+
+/* ===================== 数据统计 ===================== */
+
+.stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.stat-value {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #222;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 48rpx;
+  background: #F0F0F0;
+}
+
+/* ===================== 未登录：游客卡片 ===================== */
+
+.guest-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.guest-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.guest-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #222;
+}
+
+.guest-bio {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+/* ===================== 钱包卡片 ===================== */
+
+.wallet-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.wallet-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.wallet-value {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #FF6B6B;
+}
+
+.wallet-label {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.wallet-divider {
+  width: 2rpx;
+  height: 48rpx;
+  background: #F0F0F0;
+}
+
+/* ===================== 菜单区域 ===================== */
+
+.menu-section {
+  padding: 24rpx;
+}
+
+.menu-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 24rpx;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.menu-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.menu-name {
+  font-size: 28rpx;
+  color: #222;
+}
+
+.menu-count {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.menu-arrow {
+  font-size: 36rpx;
+  color: #D1D5DB;
+}
+
+/* ===================== 退出登录 ===================== */
+
+.logout-section {
+  margin-top: 40rpx;
+  padding: 0 8rpx;
+}
+
+.logout-btn {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  text-align: center;
+  border: 2rpx solid #FEE2E2;
+}
+
+.logout-text {
+  font-size: 30rpx;
+  color: #EF4444;
+  font-weight: 500;
+}
+
+/* ===================== 底部留白 ===================== */
+
+.bottom-space {
+  height: 200rpx;
+}
+
+/* ===================== 编辑资料弹窗 ===================== */
+
+.edit-modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.edit-modal {
+  width: 620rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+
+.edit-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40rpx;
+}
+
+.edit-modal-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.edit-modal-close {
+  font-size: 36rpx;
+  color: #9CA3AF;
+  padding: 8rpx;
+}
+
+.edit-field {
+  margin-bottom: 28rpx;
+}
+
+.edit-label {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 12rpx;
+  display: block;
+}
+
+.edit-input {
+  width: 100%;
+  height: 80rpx;
+  background: #F5F0EB;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.edit-phone-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.edit-phone-input {
+  flex: 1;
+}
+
+.edit-code-btn {
+  flex-shrink: 0;
+  background: #FF6B6B;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 16rpx;
+  white-space: nowrap;
+}
+
+.edit-code-btn.disabled {
+  background: #ccc;
+}
+
+.edit-textarea {
+  width: 100%;
+  background: #F5F0EB;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  min-height: 120rpx;
+}
+
+.edit-save-btn {
+  margin-top: 36rpx;
+  background: linear-gradient(135deg, #FF6B6B, #FF8EC4);
+  border-radius: 50rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-save-text {
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 500;
+}

@@ -1,0 +1,191 @@
+<!--
+  首页 - pages/index/index.wxml
+  暖宠星球小程序首页
+-->
+<view class="index-page">
+  
+  <!-- 自定义导航栏 - 只放标题，与胶囊对齐 -->
+  <view 
+    class="nav-bar-container"
+    style="padding-top: {{statusBarHeight}}px;"
+  >
+    <view class="nav-bar-title" style="height: {{menuButtonHeight}}px;">
+      <view class="logo">
+        <text class="logo-text">暖宠星球</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主内容区域 -->
+  <scroll-view 
+    class="main-content" 
+    scroll-y 
+    enable-back-to-top
+    refresher-enabled
+    bindrefresherrefresh="onPullDownRefresh"
+  >
+    <!-- 定位 + 搜索 + 铃铛 -->
+    <view class="search-row">
+      <view class="location" bindtap="onLocationTap">
+        <text class="location-icon">📍</text>
+        <text class="location-text">{{city}}</text>
+        <text class="location-arrow">▼</text>
+      </view>
+      
+      <view class="search-box" bindtap="onSearchTap">
+        <text class="search-icon">🔍</text>
+        <text class="search-placeholder">搜索笔记、商品、用户</text>
+      </view>
+
+      <view class="message-btn" bindtap="onMessageTap">
+        <text class="bell-icon">🔔</text>
+        <view class="red-dot"></view>
+      </view>
+    </view>
+
+    <!-- Banner轮播 -->
+    <swiper 
+      class="banner-swiper" 
+      indicator-dots 
+      autoplay 
+      circular
+      indicator-color="rgba(255,255,255,0.5)"
+      indicator-active-color="#ffffff"
+      bindchange="onBannerChange"
+    >
+      <block wx:for="{{banners}}" wx:key="id">
+        <swiper-item>
+          <image class="banner-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="banner-overlay">
+            <text class="banner-title">{{item.title}}</text>
+            <text class="banner-subtitle">{{item.subtitle}}</text>
+          </view>
+        </swiper-item>
+      </block>
+    </swiper>
+
+    <!-- 功能图标 -->
+    <view class="func-grid">
+      <block wx:for="{{funcIcons}}" wx:key="id">
+        <view 
+          class="func-item"
+          data-name="{{item.name}}"
+          bindtap="onFuncTap"
+        >
+          <view class="func-icon" style="background: {{item.bg}}">
+            <text>{{item.icon}}</text>
+          </view>
+          <text class="func-name">{{item.name}}</text>
+        </view>
+      </block>
+    </view>
+
+    <!-- 分类标签 -->
+    <scroll-view class="category-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
+      <view class="category-list">
+        <block wx:for="{{categories}}" wx:key="id">
+          <view 
+            class="category-item {{item.active ? 'active' : ''}}"
+            data-id="{{item.id}}"
+            bindtap="onCategoryTap"
+          >
+            <text>{{item.emoji}}{{item.name}}</text>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+
+    <!-- 内容卡片 -->
+    <view class="content-tabs">
+      <view class="tabs-row">
+        <block wx:for="{{feedTabs}}" wx:key="id">
+          <view 
+            class="tab-item {{item.active ? 'active' : ''}}"
+            data-id="{{item.id}}"
+            bindtap="onTabTap"
+          >
+            <text>{{item.name}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 瀑布流内容 -->
+    <view class="masonry-container">
+      <!-- 左列 -->
+      <view class="masonry-column left-column">
+        <block wx:for="{{leftPosts}}" wx:key="id">
+          <view 
+            class="post-card"
+            data-id="{{item.id}}"
+            bindtap="onPostTap"
+          >
+            <image 
+              class="post-image" 
+              src="{{item.images[0]}}" 
+              mode="widthFix"
+              lazy-load
+            />
+            <view class="post-info">
+              <text class="post-title">{{item.title}}</text>
+              <view class="post-meta">
+                <image class="author-avatar" src="{{item.avatar}}" mode="aspectFill" />
+                <text class="author-name">{{item.author}}</text>
+                <view class="post-actions">
+                  <view class="action-item" catchtap="onLikeTap" data-id="{{item.id}}">
+                    <text class="action-icon {{item.liked ? 'liked' : ''}}">♥</text>
+                    <text class="action-count">{{item.likes}}</text>
+                  </view>
+                  <view class="action-item" catchtap="onCommentTap" data-id="{{item.id}}">
+                    <text class="action-icon">💬</text>
+                    <text class="action-count">{{item.comments}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+      
+      <!-- 右列 -->
+      <view class="masonry-column right-column">
+        <block wx:for="{{rightPosts}}" wx:key="id">
+          <view 
+            class="post-card"
+            data-id="{{item.id}}"
+            bindtap="onPostTap"
+          >
+            <image 
+              class="post-image" 
+              src="{{item.images[0]}}" 
+              mode="widthFix"
+              lazy-load
+            />
+            <view class="post-info">
+              <text class="post-title">{{item.title}}</text>
+              <view class="post-meta">
+                <image class="author-avatar" src="{{item.avatar}}" mode="aspectFill" />
+                <text class="author-name">{{item.author}}</text>
+                <view class="post-actions">
+                  <view class="action-item" catchtap="onLikeTap" data-id="{{item.id}}">
+                    <text class="action-icon {{item.liked ? 'liked' : ''}}">♥</text>
+                    <text class="action-count">{{item.likes}}</text>
+                  </view>
+                  <view class="action-item" catchtap="onCommentTap" data-id="{{item.id}}">
+                    <text class="action-icon">💬</text>
+                    <text class="action-count">{{item.comments}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 底部提示 -->
+    <view class="bottom-tip" wx:if="{{!hasMore}}">
+      <text>— 没有更多内容了 —</text>
+    </view>
+  </scroll-view>
+</view>

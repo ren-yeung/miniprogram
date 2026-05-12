@@ -1,0 +1,162 @@
+/* 发布页样式 */
+
+.publish-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #FFF9F5;
+}
+
+.nav-bar-placeholder {
+  background: #FFF9F5;
+  flex-shrink: 0;
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+  padding-bottom: 8rpx;
+  margin-top: 20rpx;
+}
+
+.nav-bar-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.logo-text {
+  font-size: 36rpx;
+  font-weight: 400;
+  color: #1F2937;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24rpx;
+  margin-top: 24rpx;
+  background: #FFF9F5;
+  z-index: 100;
+}
+
+.cancel-btn {
+  font-size: 28rpx;
+  color: #6B7280;
+}
+
+.navbar-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.publish-btn {
+  font-size: 28rpx;
+  color: #FF6B6B;
+  font-weight: 600;
+}
+
+.content-area {
+  padding: 24rpx;
+  background: #ffffff;
+  margin-bottom: 16rpx;
+}
+
+.content-input {
+  width: 100%;
+  min-height: 300rpx;
+  font-size: 28rpx;
+  line-height: 1.8;
+  color: #1F2937;
+}
+
+.images-area {
+  padding: 24rpx;
+  background: #ffffff;
+}
+
+.images-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.image-item {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.image-item image {
+  width: 100%;
+  height: 100%;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 28rpx;
+}
+
+.add-image-btn {
+  width: 200rpx;
+  height: 200rpx;
+  border: 2rpx dashed #D1D5DB;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.add-icon {
+  font-size: 48rpx;
+  color: #9CA3AF;
+}
+
+.add-text {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.type-selector {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx;
+  background: #ffffff;
+  margin-top: 16rpx;
+}
+
+.type-label {
+  font-size: 28rpx;
+  color: #6B7280;
+}
+
+.type-tag {
+  padding: 10rpx 24rpx;
+  background: #FFF0F0;
+  border-radius: 50rpx;
+}
+
+.type-tag text {
+  font-size: 24rpx;
+  color: #FF6B6B;
+}

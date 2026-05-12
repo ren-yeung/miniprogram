@@ -1,0 +1,115 @@
+<!--
+  平台页 - pages/tools/tools.wxml
+-->
+<view class="tools-page">
+  
+  <!-- 自定义导航栏 - 标题行与胶囊对齐 -->
+  <view 
+    class="nav-bar-container"
+    style="padding-top: {{statusBarHeight}}px;"
+  >
+    <!-- 标题行：与胶囊按钮同一行 -->
+    <view class="nav-bar-title" style="height: {{menuButtonHeight}}px;">
+      <view class="logo">
+        <text class="logo-text">暖宠平台</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主内容 -->
+  <scroll-view class="content" scroll-y>
+    
+    <!-- 搜索框 -->
+    <view class="search-box" bindtap="onSearchTap">
+      <text class="search-icon">🔍</text>
+      <text class="search-placeholder">搜索工具和服务</text>
+    </view>
+
+    <!-- 核心工具 -->
+    <view class="section">
+      <view class="section-header">
+        <view class="section-accent" style="background:#FF6B6B;"></view>
+        <text class="section-title">核心工具</text>
+      </view>
+      <view class="tools-grid">
+        <block wx:for="{{coreTools}}" wx:key="id">
+          <view 
+            class="tool-card"
+            data-name="{{item.name}}"
+            bindtap="onToolTap"
+          >
+            <view class="tool-icon" style="background:{{item.bg}}">
+              <text>{{item.icon}}</text>
+            </view>
+            <view class="tool-info">
+              <view class="tool-name-row">
+                <text class="tool-name">{{item.name}}</text>
+                <text class="tool-badge" wx:if="{{item.badge}}" style="background:{{item.bg}};color:{{item.color}}">{{item.badge}}</text>
+              </view>
+              <text class="tool-desc">{{item.desc}}</text>
+              <text class="tool-usage">使用 {{item.usage}} 次</text>
+            </view>
+            <view class="tool-arrow">›</view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 本地服务 -->
+    <view class="section">
+      <view class="section-header">
+        <view class="section-accent" style="background:#4CAF50;"></view>
+        <text class="section-title">本地服务</text>
+      </view>
+      <view class="services-grid">
+        <block wx:for="{{localServices}}" wx:key="id">
+          <view 
+            class="service-card"
+            data-name="{{item.name}}"
+            bindtap="onServiceTap"
+          >
+            <view class="service-icon" style="background:{{item.bg}}">
+              <text>{{item.icon}}</text>
+            </view>
+            <view class="service-info">
+              <view class="service-name-row">
+                <text class="service-name">{{item.name}}</text>
+                <text class="service-badge" wx:if="{{item.badge}}">{{item.badge}}</text>
+              </view>
+              <text class="service-desc">{{item.desc}}</text>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 养宠知识 -->
+    <view class="section">
+      <view class="section-header">
+        <view class="section-accent" style="background:#6B9FFF;"></view>
+        <text class="section-title">养宠知识</text>
+      </view>
+      <view class="knowledge-list">
+        <block wx:for="{{knowledgeList}}" wx:key="id">
+          <view 
+            class="knowledge-item"
+            data-name="{{item.name}}"
+            bindtap="onKnowledgeTap"
+          >
+            <view class="knowledge-icon">
+              <text>{{item.icon}}</text>
+            </view>
+            <view class="knowledge-info">
+              <text class="knowledge-name">{{item.name}}</text>
+              <text class="knowledge-desc">{{item.desc}}</text>
+            </view>
+            <text class="knowledge-arrow">›</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 底部留白 -->
+    <view class="bottom-space"></view>
+  </scroll-view>
+</view>

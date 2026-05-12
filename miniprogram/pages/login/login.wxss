@@ -1,0 +1,228 @@
+/**
+ * 登录页面样式 - pages/login/login.wxss
+ * 暖宠星球小程序 - 小红书风格
+ */
+
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFF5F5 0%, #FFFFFF 50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 自定义导航栏 */
+.nav-bar-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: transparent;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-bar-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 32rpx;
+}
+
+.nav-back {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-icon {
+  font-size: 36rpx;
+  color: #333;
+}
+
+/* Logo 区域 */
+.logo-section {
+  margin-top: 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-icon {
+  width: 160rpx;
+  height: 160rpx;
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16rpx 48rpx rgba(255, 107, 107, 0.3);
+}
+
+.logo-emoji {
+  font-size: 80rpx;
+}
+
+.app-name {
+  margin-top: 32rpx;
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: 2rpx;
+}
+
+.slogan {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  color: #9CA3AF;
+}
+
+/* 登录按钮区域 */
+.login-section {
+  margin-top: 120rpx;
+  width: 100%;
+  padding: 0 60rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.login-btn {
+  width: 100%;
+  height: 96rpx;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.login-btn.primary {
+  background: linear-gradient(135deg, #07C160 0%, #2DC84D 100%);
+  color: #FFFFFF;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.3);
+}
+
+.login-btn.primary.loading {
+  opacity: 0.8;
+}
+
+.wechat-icon-wrap {
+  margin-right: 12rpx;
+  display: flex;
+  align-items: center;
+}
+
+.wechat-icon {
+  font-size: 36rpx;
+}
+
+.btn-text {
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.loading-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  margin-right: 12rpx;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.login-btn.secondary {
+  background: #FFFFFF;
+  border: 2rpx solid #E5E7EB;
+  color: #1A1A1A;
+}
+
+.phone-icon {
+  margin-right: 12rpx;
+  font-size: 32rpx;
+}
+
+.btn-text-secondary {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #1A1A1A;
+}
+
+/* 隐私协议区域 */
+.privacy-section {
+  margin-top: 48rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.privacy-check {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.checkbox {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  border: 2rpx solid #D1D5DB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.checkbox.checked {
+  background: #FF6B6B;
+  border-color: #FF6B6B;
+}
+
+.check-mark {
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.privacy-text {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.privacy-links {
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  font-size: 24rpx;
+  color: #FF6B6B;
+}
+
+.and {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin: 0 4rpx;
+}
+
+/* 跳过登录 */
+.skip-section {
+  margin-top: 60rpx;
+}
+
+.skip-btn {
+  font-size: 28rpx;
+  color: #9CA3AF;
+  text-decoration: underline;
+}

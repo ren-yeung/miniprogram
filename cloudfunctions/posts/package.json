@@ -1,0 +1,9 @@
+{
+  "name": "posts",
+  "version": "1.0.0",
+  "description": "暖宠星球 - 帖子云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>毛孩子社区 - 首页</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FF6B6B',
+            secondary: '#4ECDC4',
+            accent: '#FFE66D',
+            warm: {
+              50: '#FFF9F5',
+              100: '#FFF0E8',
+              200: '#FFE0D0',
+              300: '#FFCFB8',
+              400: '#FFB8A0',
+              500: '#FF9580',
+              600: '#FF6B6B',
+              700: '#E85A5A',
+              800: '#CC4A4A',
+              900: '#993636',
+            },
+            cute: {
+              blue: '#6B9FFF',
+              pink: '#FF8EC4',
+              purple: '#B388FF',
+              green: '#7FD8A6',
+              orange: '#FFB366',
+            }
+          },
+          fontFamily: {
+            sans: ['Noto Sans SC', 'sans-serif'],
+          },
+          borderRadius: {
+            'xl': '16px',
+            '2xl': '20px',
+            '3xl': '24px',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background: #FAFAFA;
+      overscroll-behavior: none;
+    }
+    
+    /* 自定义滚动条 */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* 瀑布流布局 */
+    .masonry {
+      column-count: 2;
+      column-gap: 12px;
+    }
+    
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 12px;
+    }
+    
+    /* 图片加载动画 */
+    .img-loaded {
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    /* 心跳动画 */
+    .heart-beat {
+      animation: heartBeat 0.3s ease-in-out;
+    }
+    
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+    
+    /* 收藏摇摆动画 */
+    .bookmark-wiggle {
+      animation: bookmarkWiggle 0.3s ease-in-out;
+    }
+    
+    @keyframes bookmarkWiggle {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+      100% { transform: rotate(0deg); }
+    }
+    
+    /* 标签滚动 */
+    .tab-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* 卡片悬停效果 */
+    .card-hover {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .card-hover:active {
+      transform: scale(0.98);
+    }
+    
+    /* 底部安全区 */
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+    
+    /* 状态栏伪元素 */
+    .status-bar::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: env(safe-area-inset-top, 0);
+      background: white;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+  
+  <!-- 状态栏占位 -->
+  <div class="h-[env(safe-area-inset-top,0px)]"></div>
+  
+  <!-- 顶部导航栏 -->
+  <header class="sticky top-0 z-50 bg-white shadow-sm">
+    <div class="flex items-center justify-between px-4 py-3">
+      <!-- Logo区域 -->
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-cute-pink flex items-center justify-center shadow-lg">
+          <span class="text-2xl">🐾</span>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-gray-800 leading-tight">毛孩子社区</h1>
+          <p class="text-[10px] text-gray-400">Pet Community</p>
+        </div>
+      </div>
+      
+      <!-- 搜索入口 -->
+      <div class="flex-1 max-w-xs mx-4">
+        <div class="relative bg-gray-100 rounded-full px-4 py-2 flex items-center gap-2 active:bg-gray-200 transition-colors">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <span class="text-sm text-gray-400">搜索笔记、用户、话题</span>
+        </div>
+      </div>
+      
+      <!-- 消息入口 -->
+      <button class="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+        <!-- 消息红点 -->
+        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+      </button>
+    </div>
+    
+    <!-- 分类标签栏 -->
+    <div class="tab-scroll flex gap-1 px-4 py-2 overflow-x-auto">
+      <button class="flex-shrink-0 px-4 py-1.5 text-sm font-medium bg-primary text-white rounded-full transition-all">
+        推荐
+      </button>
+      <button class="flex-shrink-0 px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-full transition-all">
+        🐶 狗狗
+      </button>
+      <button class="flex-shrink-0 px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-full transition-all">
+        🐱 猫咪
+      </button>
+      <button class="flex-shrink-0 px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-full transition-all">
+        🐰 兔兔
+      </button>
+      <button class="flex-shrink-0 px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-full transition-all">
+        🐹 仓鼠
+      </button>
+      <button class="flex-shrink-0 px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-full transition-all">
+        🦜 鸟类
+      </button>
+      <button class="flex-shrink-0 px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-full transition-all">
+        🐢 爬宠
+      </button>
+      <button class="flex-shrink-0 px-4 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-full transition-all">
+        🏥 医疗
+      </button>
+    </div>
+  </header>
+  
+  <!-- 主内容区域 - 瀑布流 -->
+  <main class="px-3 pt-3 pb-20">
+    <div class="masonry">
+      
+      <!-- 卡片1 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/500?random=1" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <!-- 图片上的标签 -->
+            <span class="absolute top-2 left-2 px-2 py-1 bg-cute-pink/90 text-white text-xs rounded-full backdrop-blur-sm">
+              🐶 汪星人
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              今天的快乐是狗狗给的🐶 超萌睡颜合集，太治愈了！
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=1" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">萌宠日记</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">2.3k</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片2 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/350?random=2" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-cute-blue/90 text-white text-xs rounded-full backdrop-blur-sm">
+              🐱 喵星人
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              橘猫果然都是潜力股！8个月前的它 vs 现在
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=2" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">橘子控</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">5.8k</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片3 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/600?random=3" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-cute-green/90 text-white text-xs rounded-full backdrop-blur-sm">
+              📷 日常
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              第一次带崽出门遛弯，紧张到不行😅
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=3" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">新手铲屎官</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">892</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片4 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/450?random=4" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-accent/90 text-gray-800 text-xs rounded-full backdrop-blur-sm">
+              🎁 好物
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              私藏宠物用品分享｜提升幸福感的10件好物
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=4" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">好物推荐官</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">3.5k</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片5 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/380?random=5" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-cute-purple/90 text-white text-xs rounded-full backdrop-blur-sm">
+              🏠 萌宠
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              猫狗双全的快乐谁懂啊！🐶🐱
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=5" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">幸福一家人</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">1.2w</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片6 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/520?random=6" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-cute-orange/90 text-white text-xs rounded-full backdrop-blur-sm">
+              🐹 仓鼠
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              仓鼠的迷惑行为大赏😂 看完笑出腹肌
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=6" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">鼠鼠俱乐部</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">4.6k</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片7 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/420?random=7" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-warm-600/90 text-white text-xs rounded-full backdrop-blur-sm">
+              🦜 鹦鹉
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              养鹦鹉第100天｜它居然学会说话了！
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=7" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">鸟类爱好者</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">2.8k</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片8 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/480?random=8" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-cute-pink/90 text-white text-xs rounded-full backdrop-blur-sm">
+              🐰 兔兔
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              兔兔太可爱了！忍不住rua了一下午
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=8" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">兔兔星球</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">6.1k</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片9 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/360?random=9" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-secondary/90 text-white text-xs rounded-full backdrop-blur-sm">
+              🏥 医疗
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              宠物疫苗接种全攻略📋 新手必看！
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=9" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">宠物医生</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">1.5k</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片10 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/550?random=10" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-cute-blue/90 text-white text-xs rounded-full backdrop-blur-sm">
+              🐶 狗狗
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              金毛的笑容太治愈了！每天回家都有小可爱迎接
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=10" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">金毛控</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">9.2k</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片11 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/400?random=11" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-accent/90 text-gray-800 text-xs rounded-full backdrop-blur-sm">
+              🍖 食谱
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              自制狗粮食谱｜营养又健康，毛孩子超爱吃！
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=11" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">宠物营养师</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">7.3k</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      <!-- 卡片12 -->
+      <article class="masonry-item">
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover">
+          <div class="relative">
+            <img src="https://picsum.photos/400/580?random=12" alt="宠物照片" class="w-full object-cover img-loaded" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-1 bg-cute-purple/90 text-white text-xs rounded-full backdrop-blur-sm">
+              🐱 猫咪
+            </span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-medium text-gray-800 line-clamp-2 mb-2">
+              布偶猫的盛世美颜！每一帧都是壁纸
+            </h3>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="https://i.pravatar.cc/40?img=12" alt="用户头像" class="w-6 h-6 rounded-full object-cover">
+                <span class="text-xs text-gray-500">猫奴日记</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="like-btn flex items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="text-xs">12w</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+    </div>
+  </main>
+  
+  <!-- 底部TabBar -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 safe-bottom z-50">
+    <div class="flex items-center justify-around py-2 px-4">
+      <!-- 首页 -->
+      <button class="flex flex-col items-center gap-0.5 px-4 py-1 text-primary">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+        <span class="text-[10px] font-medium">首页</span>
+      </button>
+      
+      <!-- 发现 -->
+      <button class="flex flex-col items-center gap-0.5 px-4 py-1 text-gray-400">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span class="text-[10px]">发现</span>
+      </button>
+      
+      <!-- 发布按钮 -->
+      <button class="flex items-center justify-center -mt-4">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-cute-pink flex items-center justify-center shadow-lg active:scale-95 transition-transform">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </div>
+      </button>
+      
+      <!-- 消息 -->
+      <button class="flex flex-col items-center gap-0.5 px-4 py-1 text-gray-400 relative">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        <span class="text-[10px]">消息</span>
+        <span class="absolute top-0 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      
+      <!-- 我的 -->
+      <button class="flex flex-col items-center gap-0.5 px-4 py-1 text-gray-400">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+        <span class="text-[10px]">我的</span>
+      </button>
+    </div>
+    
+    <!-- TabBar上边框渐变 -->
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+  </nav>
+  
+  <!-- 交互脚本 -->
+  <script>
+    // 点赞交互
+    document.querySelectorAll('.like-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const icon = this.querySelector('svg');
+        const count = this.querySelector('span');
+        
+        if (this.classList.contains('text-primary')) {
+          // 取消点赞
+          this.classList.remove('text-primary');
+          this.classList.add('text-gray-400');
+          icon.innerHTML = '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>';
+          // 更新数量
+          let num = parseFloat(count.textContent);
+          if (count.textContent.includes('w')) {
+            num = num * 10;
+          }
+          num = Math.round(num - 1);
+          if (num >= 10000) {
+            count.textContent = (num/10000).toFixed(1) + 'w';
+          } else if (num >= 1000) {
+            count.textContent = (num/1000).toFixed(1) + 'k';
+          } else {
+            count.textContent = num;
+          }
+        } else {
+          // 点赞
+          this.classList.remove('text-gray-400');
+          this.classList.add('text-primary');
+          icon.innerHTML = '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>';
+          icon.classList.add('heart-beat');
+          setTimeout(() => icon.classList.remove('heart-beat'), 300);
+          
+          // 更新数量
+          let num = parseFloat(count.textContent);
+          if (count.textContent.includes('w')) {
+            num = num * 10;
+          } else if (count.textContent.includes('k')) {
+            num = num * 1000;
+          }
+          num = Math.round(num + 1);
+          if (num >= 10000) {
+            count.textContent = (num/10000).toFixed(1) + 'w';
+          } else if (num >= 1000) {
+            count.textContent = (num/1000).toFixed(1) + 'k';
+          } else {
+            count.textContent = num;
+          }
+        }
+      });
+    });
+    
+    // 卡片点击效果
+    document.querySelectorAll('.card-hover').forEach(card => {
+      card.addEventListener('click', function() {
+        // 添加点击反馈
+        this.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+          this.style.transform = '';
+        }, 100);
+      });
+    });
+    
+    // 标签切换效果
+    document.querySelectorAll('.tab-scroll button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // 移除所有active状态
+        document.querySelectorAll('.tab-scroll button').forEach(b => {
+          b.classList.remove('bg-primary', 'text-white');
+          b.classList.add('text-gray-600');
+        });
+        // 添加active状态
+        this.classList.add('bg-primary', 'text-white');
+        this.classList.remove('text-gray-600');
+      });
+    });
+  </script>
+  
+</body>
+</html>

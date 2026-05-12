@@ -1,0 +1,57 @@
+<!--
+  发布页 - pages/publish/publish.wxml
+-->
+<view class="publish-page">
+  <!-- 导航栏占位 - 与首页对齐 -->
+  <view 
+    class="nav-bar-placeholder"
+    style="padding-top: {{statusBarHeight}}px;"
+  >
+    <view class="nav-bar-title" style="height: {{menuButtonHeight}}px;">
+      <view class="logo">
+        <text class="logo-text">暖宠星球</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 顶部操作栏 - 与首页搜索框齐平 -->
+  <view class="navbar">
+    <view class="cancel-btn" bindtap="onBack">取消</view>
+    <text class="navbar-title">发布{{publishType}}</text>
+    <text class="publish-btn" bindtap="onPublish">发布</text>
+  </view>
+
+  <!-- 内容输入 -->
+  <view class="content-area">
+    <textarea 
+      class="content-input"
+      placeholder="分享你的养宠生活..."
+      bindinput="onContentInput"
+      value="{{content}}"
+    />
+  </view>
+
+  <!-- 图片区 -->
+  <view class="images-area">
+    <view class="images-grid">
+      <block wx:for="{{images}}" wx:key="index">
+        <view class="image-item">
+          <image src="{{item}}" mode="aspectFill" />
+          <view class="remove-btn" data-index="{{index}}" bindtap="onRemoveImage">×</view>
+        </view>
+      </block>
+      <view class="add-image-btn" bindtap="onAddImage" wx:if="{{images.length < 9}}">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类标签 -->
+  <view class="type-selector">
+    <text class="type-label">发布到：</text>
+    <view class="type-tag">
+      <text>{{publishType}}</text>
+    </view>
+  </view>
+</view>

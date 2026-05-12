@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>暖宠星球 - 平台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto Sans SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    * { font-family: 'Noto Sans SC', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: #FFF9F5; max-width: 375px; margin: 0 auto; overflow-x: hidden; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 70px); }
+    ::-webkit-scrollbar { display: none; }
+    .scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .scroll-hide::-webkit-scrollbar { display: none; }
+
+    /* Cards */
+    .tool-card { transition: all 0.2s ease; cursor: pointer; }
+    .tool-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .tool-card:active { transform: scale(0.97); }
+
+    /* Icon containers */
+    .icon-wrap { transition: transform 0.2s; }
+    .tool-card:hover .icon-wrap { transform: scale(1.08); }
+
+    /* TabBar */
+    .tabbar-item.active svg { color: #FF6B6B; }
+    .tabbar-item.active .tabbar-label { color: #FF6B6B; }
+
+    /* Section header accent */
+    .section-accent { width: 4px; height: 18px; border-radius: 2px; display: inline-block; }
+
+    /* Badge */
+    .badge-new { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  </style>
+</head>
+<body>
+
+<!-- ===================== STATUS BAR ===================== -->
+<div class="h-11 bg-white"></div>
+
+<!-- ===================== HEADER ===================== -->
+<div class="sticky top-0 z-30 bg-white" style="padding-top:env(safe-area-inset-top,0px);">
+  <div class="px-4 pt-2 pb-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-sm" style="background:linear-gradient(135deg,#FF6B6B,#FF8EC4);">🐾</div>
+        <span class="text-lg font-bold text-gray-800">暖宠平台</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs px-2.5 py-1 rounded-full" style="background:#FFF0F0;color:#FF6B6B;">V1.0</span>
+      </div>
+    </div>
+    <!-- Subtitle -->
+    <p class="text-xs text-gray-400 mt-1">您的随身养宠工具箱</p>
+  </div>
+</div>
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<div class="px-3 pt-2 space-y-5">
+
+  <!-- ==================== SECTION 1: CORE TOOLS ==================== -->
+  <div>
+    <div class="flex items-center gap-2 mb-3">
+      <span class="section-accent" style="background:#FF6B6B;"></span>
+      <h2 class="text-base font-semibold text-gray-800">核心工具</h2>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+
+      <!-- 健康台账 -->
+      <div class="tool-card rounded-2xl p-4" style="background:linear-gradient(135deg,#FFF5F5,#FFFFFF);border:1px solid #FFE5E5;">
+        <div class="icon-wrap w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3" style="background:#FFE0E0;">
+          🩺
+        </div>
+        <h3 class="text-sm font-semibold text-gray-800 mb-1">宠物健康台账</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">记录疫苗、体重、体检、驱虫，全方位守护宠物健康</p>
+        <div class="mt-2 flex items-center gap-1">
+          <span class="text-xs px-2 py-0.5 rounded-full" style="background:#FFE0E0;color:#FF6B6B;">热门</span>
+          <span class="text-xs text-gray-400 ml-auto">使用 2.3k</span>
+        </div>
+      </div>
+
+      <!-- 喂养计算器 -->
+      <div class="tool-card rounded-2xl p-4" style="background:linear-gradient(135deg,#F0FFF4,#FFFFFF);border:1px solid #D0F0E0;">
+        <div class="icon-wrap w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3" style="background:#D0F0E0;">
+          🍖
+        </div>
+        <h3 class="text-sm font-semibold text-gray-800 mb-1">喂养计算器</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">根据品种、体重、年龄，科学计算每日食量</p>
+        <div class="mt-2 flex items-center gap-1">
+          <span class="text-xs px-2 py-0.5 rounded-full" style="background:#D0F0E0;color:#4CAF50;">推荐</span>
+          <span class="text-xs text-gray-400 ml-auto">使用 1.8k</span>
+        </div>
+      </div>
+
+      <!-- 宠物纪念日 -->
+      <div class="tool-card rounded-2xl p-4" style="background:linear-gradient(135deg,#FFF9F0,#FFFFFF);border:1px solid #FFE8C0;">
+        <div class="icon-wrap w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3" style="background:#FFE8C0;">
+          🎂
+        </div>
+        <h3 class="text-sm font-semibold text-gray-800 mb-1">宠物纪念日</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">记录生日、到家日，设置疫苗提醒，不再错过重要日子</p>
+        <div class="mt-2 flex items-center gap-1">
+          <span class="text-xs px-2 py-0.5 rounded-full badge-new" style="background:#FFE8C0;color:#F59E0B;">新功能</span>
+          <span class="text-xs text-gray-400 ml-auto">使用 956</span>
+        </div>
+      </div>
+
+      <!-- 症状自查 -->
+      <div class="tool-card rounded-2xl p-4" style="background:linear-gradient(135deg,#F0F4FF,#FFFFFF);border:1px solid #D8E4FF;">
+        <div class="icon-wrap w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3" style="background:#D8E4FF;">
+          🔍
+        </div>
+        <h3 class="text-sm font-semibold text-gray-800 mb-1">症状自查</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">AI智能初步分析宠物症状，提供就医建议参考</p>
+        <div class="mt-2 flex items-center gap-1">
+          <span class="text-xs px-2 py-0.5 rounded-full" style="background:#D8E4FF;color:#6B9FFF;">AI辅助</span>
+          <span class="text-xs text-gray-400 ml-auto">使用 3.1k</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== SECTION 2: LOCAL SERVICES ==================== -->
+  <div>
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <span class="section-accent" style="background:#4ECDC4;"></span>
+        <h2 class="text-base font-semibold text-gray-800">本地服务</h2>
+      </div>
+      <span class="text-xs text-gray-400 flex items-center gap-1">
+        查看全部
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+      </span>
+    </div>
+    <div class="rounded-2xl overflow-hidden" style="background:#FFFFFF;box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+      
+      <!-- Item 1 -->
+      <div class="tool-card flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+        <div class="icon-wrap w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style="background:#FFF0F0;">🏥</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-medium text-gray-800">宠物医院</h3>
+            <span class="text-xs px-1.5 py-0.5 rounded-full" style="background:#FFE0E0;color:#FF6B6B;">热门</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-0.5 truncate">查找附近正规宠物医院，支持预约挂号</p>
+        </div>
+        <div class="flex items-center gap-1 flex-shrink-0">
+          <div class="flex -space-x-1">
+            <img src="https://i.pravatar.cc/24?img=1" class="w-5 h-5 rounded-full border-2 border-white">
+            <img src="https://i.pravatar.cc/24?img=2" class="w-5 h-5 rounded-full border-2 border-white">
+            <img src="https://i.pravatar.cc/24?img=3" class="w-5 h-5 rounded-full border-2 border-white">
+          </div>
+          <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="tool-card flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+        <div class="icon-wrap w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style="background:#F0FFF4;">✂️</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-medium text-gray-800">宠物美容</h3>
+          </div>
+          <p class="text-xs text-gray-500 mt-0.5 truncate">附近宠物美容店，洗澡、造型、指甲修剪</p>
+        </div>
+        <div class="flex items-center gap-1 flex-shrink-0">
+          <div class="flex -space-x-1">
+            <img src="https://i.pravatar.cc/24?img=5" class="w-5 h-5 rounded-full border-2 border-white">
+            <img src="https://i.pravatar.cc/24?img=6" class="w-5 h-5 rounded-full border-2 border-white">
+          </div>
+          <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="tool-card flex items-center gap-3 p-4 border-b" style="border-color:#F9F5F0;">
+        <div class="icon-wrap w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style="background:#FFF9F0;">🏠</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-medium text-gray-800">宠物寄养</h3>
+            <span class="text-xs px-1.5 py-0.5 rounded-full" style="background:#FFE8C0;color:#F59E0B;">同城</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-0.5 truncate">出差旅行不在家？找靠谱的同城宠友帮忙寄养</p>
+        </div>
+        <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="tool-card flex items-center gap-3 p-4">
+        <div class="icon-wrap w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style="background:#F0F4FF;">🍖</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-medium text-gray-800">宠物食品店</h3>
+          </div>
+          <p class="text-xs text-gray-500 mt-0.5 truncate">附近宠物用品店，品牌粮、零食、玩具一应俱全</p>
+        </div>
+        <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== SECTION 3: KNOWLEDGE ==================== -->
+  <div>
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <span class="section-accent" style="background:#B388FF;"></span>
+        <h2 class="text-base font-semibold text-gray-800">科普知识</h2>
+      </div>
+      <span class="text-xs text-gray-400 flex items-center gap-1">
+        更多
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+      </span>
+    </div>
+    <div class="grid grid-cols-3 gap-2">
+
+      <div class="tool-card rounded-2xl overflow-hidden text-center" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-full flex items-center justify-center py-4 text-2xl" style="background:#FFF5F5;">💉</div>
+        <div class="p-2.5">
+          <p class="text-xs font-medium text-gray-700">疫苗指南</p>
+          <p class="text-xs text-gray-400 mt-0.5">86篇</p>
+        </div>
+      </div>
+
+      <div class="tool-card rounded-2xl overflow-hidden text-center" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-full flex items-center justify-center py-4 text-2xl" style="background:#F0FFF4;">🦠</div>
+        <div class="p-2.5">
+          <p class="text-xs font-medium text-gray-700">驱虫手册</p>
+          <p class="text-xs text-gray-400 mt-0.5">54篇</p>
+        </div>
+      </div>
+
+      <div class="tool-card rounded-2xl overflow-hidden text-center" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-full flex items-center justify-center py-4 text-2xl" style="background:#FFF9F0;">🍽️</div>
+        <div class="p-2.5">
+          <p class="text-xs font-medium text-gray-700">喂养百科</p>
+          <p class="text-xs text-gray-400 mt-0.5">120篇</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== SECTION 4: MORE TOOLS ==================== -->
+  <div>
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <span class="section-accent" style="background:#FF8EC4;"></span>
+        <h2 class="text-base font-semibold text-gray-800">更多工具</h2>
+      </div>
+    </div>
+    <div class="grid grid-cols-4 gap-2">
+
+      <div class="tool-card flex flex-col items-center gap-1.5 p-3 rounded-2xl" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#FFF5F5;">📋</div>
+        <p class="text-xs text-gray-700 text-center">体重记录</p>
+      </div>
+
+      <div class="tool-card flex flex-col items-center gap-1.5 p-3 rounded-2xl" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#F0FFF4;">💊</div>
+        <p class="text-xs text-gray-700 text-center">用药提醒</p>
+      </div>
+
+      <div class="tool-card flex flex-col items-center gap-1.5 p-3 rounded-2xl" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#F0F4FF;">📅</div>
+        <p class="text-xs text-gray-700 text-center">日程提醒</p>
+      </div>
+
+      <div class="tool-card flex flex-col items-center gap-1.5 p-3 rounded-2xl" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#FFF9F0;">⚖️</div>
+        <p class="text-xs text-gray-700 text-center">体脂检测</p>
+      </div>
+
+      <div class="tool-card flex flex-col items-center gap-1.5 p-3 rounded-2xl" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#F5F0FF;">🛁</div>
+        <p class="text-xs text-gray-700 text-center">洗澡计划</p>
+      </div>
+
+      <div class="tool-card flex flex-col items-center gap-1.5 p-3 rounded-2xl" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#FFF4F4;">🤧</div>
+        <p class="text-xs text-gray-700 text-center">过敏排查</p>
+      </div>
+
+      <div class="tool-card flex flex-col items-center gap-1.5 p-3 rounded-2xl" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#F0FDF9;">🏆</div>
+        <p class="text-xs text-gray-700 text-center">技能训练</p>
+      </div>
+
+      <div class="tool-card flex flex-col items-center gap-1.5 p-3 rounded-2xl" style="background:#FFFFFF;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#F9F9F9;">📦</div>
+        <p class="text-xs text-gray-700 text-center">更多</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== SECTION 5: MY PETS ==================== -->
+  <div>
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <span class="section-accent" style="background:#FF6B6B;"></span>
+        <h2 class="text-base font-semibold text-gray-800">我的宠物</h2>
+      </div>
+      <button class="text-xs px-3 py-1 rounded-full" style="background:#FFF0F0;color:#FF6B6B;">+ 添加宠物</button>
+    </div>
+
+    <!-- Pet cards -->
+    <div class="space-y-3">
+      <!-- Pet 1 -->
+      <div class="tool-card rounded-2xl p-4 flex items-center gap-3" style="background:linear-gradient(135deg,#FFF5F5,#FFFFFF);border:1px solid #FFE5E5;">
+        <img src="https://picsum.photos/seed/petcat/200/200" class="w-16 h-16 rounded-2xl object-cover flex-shrink-0">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-semibold text-gray-800">团子</h3>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:#FFE0E0;color:#FF6B6B;">🐱 英短</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">2岁 · ♂ 公 · 已绝育</p>
+          <div class="flex items-center gap-3 mt-1.5">
+            <span class="text-xs text-gray-400">💉 疫苗已打</span>
+            <span class="text-xs text-gray-400">🦠 下次驱虫 15天后</span>
+          </div>
+        </div>
+        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background:#FFE0E0;">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+      </div>
+
+      <!-- Pet 2 -->
+      <div class="tool-card rounded-2xl p-4 flex items-center gap-3" style="background:linear-gradient(135deg,#FFF9F0,#FFFFFF);border:1px solid #FFE8C0;">
+        <img src="https://picsum.photos/seed/petdog/200/200" class="w-16 h-16 rounded-2xl object-cover flex-shrink-0">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-semibold text-gray-800">旺财</h3>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:#FFE8C0;color:#F59E0B;">🐶 金毛</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">3岁 · ♂ 公 · 已绝育</p>
+          <div class="flex items-center gap-3 mt-1.5">
+            <span class="text-xs text-gray-400">💉 疫苗已打</span>
+            <span class="text-xs text-gray-400">📅 体检 3个月前</span>
+          </div>
+        </div>
+        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background:#FFE8C0;">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spacer for TabBar -->
+  <div class="h-8"></div>
+
+</div>
+
+<!-- ===================== TAB BAR ===================== -->
+<div class="sticky bottom-0 w-full z-50">
+  <div class="flex items-stretch justify-around py-2 bg-white rounded-t-2xl shadow-lg border-t" style="border-color:#F5EDE8; padding-bottom:env(safe-area-inset-bottom, 0px);">
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-home.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">首页</span>
+    </button>
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-square.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">广场</span>
+    </button>
+    <button class="tabbar-item active flex flex-col items-center gap-0.5 py-1 px-4">
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      <span class="tabbar-label text-xs">平台</span>
+    </button>
+    <button class="tabbar-item flex flex-col items-center gap-0.5 py-1 px-4" onclick="location.href='prototype-profile.html'">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="tabbar-label text-xs" style="color:#999;">我的</span>
+    </button>
+  </div>
+</div>
+
+</body>
+</html>

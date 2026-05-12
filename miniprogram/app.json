@@ -1,0 +1,54 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/square/square",
+    "pages/tools/tools",
+    "pages/profile/profile",
+    "pages/post-detail/post-detail",
+    "pages/search/search",
+    "pages/publish/publish",
+    "pages/login/login"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "暖宠星球"
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "tabBar": {
+    "color": "#9CA3AF",
+    "selectedColor": "#FF6B6B",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/tabbar/home.png",
+        "selectedIconPath": "assets/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/square/square",
+        "text": "广场",
+        "iconPath": "assets/tabbar/square.png",
+        "selectedIconPath": "assets/tabbar/square-active.png"
+      },
+      {
+        "pagePath": "pages/tools/tools",
+        "text": "平台",
+        "iconPath": "assets/tabbar/tools.png",
+        "selectedIconPath": "assets/tabbar/tools-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/tabbar/profile.png",
+        "selectedIconPath": "assets/tabbar/profile-active.png"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "custom": true,
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
