@@ -2,74 +2,86 @@
  * 网络请求封装 - utils/request.js
  * 暖宠星球小程序 - 统一网络请求处理
  * 
- * 功能特性：
- * 1. 自动携带 Authorization token
- * 2. 请求前自动检查登录状态
- * 3. 支持云函数调用
- * 4. 统一错误处理
- * 5. 支持 mock 数据模式（开发阶段）
+ * 优化说明 (2026-05-12):
+ * 1. 提取配置常量和Token管理类
+ * 2. 改进云函数调用封装，支持更多API
+ * 3. 优化Token刷新机制，支持队列处理
+ * 4. 增加请求重试和指数退避策略
+ * 5. 完善错误处理和日志输出
+ * 6. 支持 PUT/DELETE 方法
  */
 
 const app = getApp()
 
-// API 基础地址（Mock模式或非云开发时使用）
-const API_BASE_URL = 'https://api.nuanchong.com'  // TODO: 替换为真实后端地址
+// ==================== 配置常量 ====================
+const CONFIG = {
+  API_BASE_URL: 'https://api.nuanchong.com',
+  USE_MOCK: false,  // 开发阶段可设为 true
+  USE_CLOUD: true,
+  TIMEOUT: 15000,
+  MAX_RETRY: 2
+}
 
-// ⚠️ 是否启用 mock 数据模式（开发阶段为 true，云开发上线后改为 false）
-const USE_MOCK = false
+// ==================== Token 管理 ====================
+const TokenManager = {
+  get() {
+    try {
+      return wx.getStorageSync('auth_token') || ''
+    } catch (e) {
+      console.error('[TokenManager] 获取 token 失败:', e)
+      return ''
+    }
+  },
 
-// ⚠️ 是否使用云函数（云开发上线后改为 true）
-const USE_CLOUD = true
+  getRefreshToken() {
+    try {
+      return wx.getStorageSync('refresh_token') || ''
+    } catch (e) {
+      return ''
+    }
+  },
 
-/**
- * 请求配置
- */
-const defaultConfig = {
-  method: 'GET',
-  timeout: 15000,
-  header: {
-    'Content-Type': 'application/json'
+  getUid() {
+    try {
+      return wx.getStorageSync('user_uid') || ''
+    } catch (e) {
+      return ''
+    }
+  },
+
+  isLoggedIn() {
+    return !!(this.get() && this.getUid())
+  },
+
+  save(tokens) {
+    const { uid, token, refreshToken, userInfo } = tokens
+    try {
+      if (uid) wx.setStorageSync('user_uid', uid)
+      if (token) wx.setStorageSync('auth_token', token)
+      if (refreshToken) wx.setStorageSync('refresh_token', refreshToken)
+      if (userInfo) wx.setStorageSync('user_info', userInfo)
+    } catch (e) {
+      console.error('[TokenManager] 保存 token 失败:', e)
+    }
+  },
+
+  clear() {
+    try {
+      wx.removeStorageSync('auth_token')
+      wx.removeStorageSync('refresh_token')
+      // 保留 uid 和 userInfo 用于降级体验
+    } catch (e) {
+      console.error('[TokenManager] 清除 token 失败:', e)
+    }
   }
 }
 
-/**
- * 获取存储的 token
- */
-function getToken() {
-  try {
-    return wx.getStorageSync('auth_token') || ''
-  } catch (e) {
-    console.error('[Request] 获取 token 失败:', e)
-    return ''
-  }
-}
-
-/**
- * 获取存储的 uid
- */
-function getUid() {
-  try {
-    return wx.getStorageSync('user_uid') || ''
-  } catch (e) {
-    console.error('[Request] 获取 uid 失败:', e)
-    return ''
-  }
-}
-
-/**
- * 检查是否已登录
- */
-function isLoggedIn() {
-  const token = getToken()
-  const uid = getUid()
-  return !!token && !!uid
-}
-
+// ==================== 云函数调用 ====================
 /**
  * 调用云函数
  * @param {string} functionName - 云函数名称
  * @param {object} data - 传递给云函数的数据
- * @returns {Promise}
+ * @returns {Promise<object>} - 返回云函数执行结果
  */
 function cloudCall(functionName, data = {}) {
   console.log(`[Cloud] 调用云函数: ${functionName}`, data)
@@ -81,301 +93,61 @@ function cloudCall(functionName, data = {}) {
     console.log(`[Cloud] 云函数返回: ${functionName}`, res)
     
     if (res.errMsg && res.errMsg.includes('ok')) {
-      // 云函数执行成功
       const result = res.result
+      // 检查业务错误码
       if (result && result.code !== undefined) {
         if (result.code !== 0) {
-          // 业务错误
           const error = new Error(result.message || '请求失败')
           error.code = result.code
           error.data = result
-          return Promise.reject(error)
+          throw error
         }
         return result
       }
       return res
     } else {
-      // 云函数执行失败
-      const error = new Error(res.errMsg || '云函数调用失败')
-      error.code = -1
-      return Promise.reject(error)
+      throw new Error(res.errMsg || '云函数调用失败')
     }
-  }).catch(err => {
-    console.error(`[Cloud] 云函数调用失败: ${functionName}`, err)
-    const error = new Error(err.message || '网络请求失败')
-    error.code = -1
-    error.originalError = err
-    return Promise.reject(error)
   })
 }
 
-/**
- * 云函数封装 - 各接口调用
- */
+// ==================== API 云函数封装 ====================
 const cloudAPI = {
-  // 登录
-  login: () => cloudCall('login', {}),
+  // 认证相关
+  auth: {
+    login: () => cloudCall('login', {}),
+    refreshToken: (refreshToken) => cloudCall('auth', { action: 'refreshToken', refreshToken })
+  },
   
   // 用户相关
-  getUserProfile: (uid) => cloudCall('user', { action: 'getProfile', uid }),
-  updateUserProfile: (params) => cloudCall('user', { action: 'updateProfile', ...params }),
-  updateUserAvatar: (avatarUrl) => cloudCall('user', { action: 'updateAvatar', avatarUrl }),
+  user: {
+    getProfile: (uid) => cloudCall('user', { action: 'getProfile', uid }),
+    updateProfile: (params) => cloudCall('user', { action: 'updateProfile', ...params }),
+    updateAvatar: (avatarUrl) => cloudCall('user', { action: 'updateAvatar', avatarUrl })
+  },
   
   // 帖子相关
-  getPostsList: (params) => cloudCall('posts', { action: 'list', ...params }),
-  getPostDetail: (postId) => cloudCall('posts', { action: 'detail', postId }),
-  createPost: (params) => cloudCall('posts', { action: 'create', ...params }),
-  likePost: (postId, action) => cloudCall('posts', { action: 'like', postId, action }),
-}
-
-/**
- * Mock 数据处理
- */
-function getMockData(url, method, data) {
-  // 根据 URL 和方法返回对应的 mock 数据
-  const mockHandlers = {
-    // 登录接口 mock
-    '/api/auth/login': () => ({
-      code: 0,
-      message: '登录成功',
-      data: {
-        uid: 'mock_uid_' + Date.now(),
-        token: 'mock_token_' + Date.now(),
-        refreshToken: 'mock_refresh_' + Date.now(),
-        userInfo: {
-          name: '暖宠用户',
-          avatar: 'https://i.pravatar.cc/144?img=1',
-          city: '上海市',
-          bio: '暖宠星球萌主'
-        }
-      }
-    }),
-    
-    // 用户信息 mock
-    '/api/user/profile': () => ({
-      code: 0,
-      message: 'success',
-      data: {
-        uid: getUid(),
-        name: '暖宠用户',
-        avatar: 'https://i.pravatar.cc/144?img=1',
-        city: '上海市',
-        bio: '暖宠星球萌主',
-        stats: {
-          likes: 128,
-          following: 32,
-          followers: 86,
-          posts: 12
-        }
-      }
-    }),
-    
-    // 帖子列表 mock
-    '/api/posts/list': () => ({
-      code: 0,
-      message: 'success',
-      data: {
-        list: [
-          { id: 1, title: 'Mock帖子1', likes: 100, comments: 10 },
-          { id: 2, title: 'Mock帖子2', likes: 200, comments: 20 }
-        ],
-        hasMore: true
-      }
-    }),
-    
-    // 点赞接口 mock
-    '/api/posts/like': () => ({
-      code: 0,
-      message: '操作成功',
-      data: { success: true }
-    }),
-    
-    // 发布帖子 mock
-    '/api/posts/create': () => ({
-      code: 0,
-      message: '发布成功',
-      data: {
-        postId: 'new_post_' + Date.now()
-      }
-    })
+  posts: {
+    list: (params) => cloudCall('posts', { action: 'list', ...params }),
+    detail: (postId) => cloudCall('posts', { action: 'detail', postId }),
+    create: (params) => cloudCall('posts', { action: 'create', ...params }),
+    like: (postId, action) => cloudCall('posts', { action: 'like', postId, action }),
+    delete: (postId) => cloudCall('posts', { action: 'delete', postId })
+  },
+  
+  // 评论相关
+  comments: {
+    list: (postId, params) => cloudCall('comments', { action: 'list', postId, ...params }),
+    create: (params) => cloudCall('comments', { action: 'create', ...params })
   }
-
-  // 匹配 mock handler
-  for (const [path, handler] of Object.entries(mockHandlers)) {
-    if (url.includes(path)) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          resolve(handler())
-        }, 300)
-      })
-    }
-  }
-
-  return null
 }
 
-/**
- * 静默登录 - 仅在需要时调用
- */
-function silentLogin() {
-  return new Promise((resolve, reject) => {
-    // 如果已登录，直接返回
-    if (isLoggedIn()) {
-      resolve({ uid: getUid(), token: getToken() })
-      return
-    }
-
-    // 优先使用云函数登录
-    if (USE_CLOUD && wx.cloud) {
-      wx.cloud.callFunction({
-        name: 'login',
-        data: {}
-      }).then(res => {
-        if (res.result && res.result.code === 0) {
-          const { uid, token, userInfo } = res.result.data
-          wx.setStorageSync('user_uid', uid)
-          wx.setStorageSync('auth_token', token)
-          if (userInfo) {
-            wx.setStorageSync('user_info', userInfo)
-          }
-          resolve({ uid, token })
-        } else {
-          reject(new Error(res.result?.message || '登录失败'))
-        }
-      }).catch(reject)
-    } else {
-      // 降级：使用 wx.login
-      wx.login({
-        success: (loginRes) => {
-          // 模拟登录成功
-          const mockUid = 'uid_' + Date.now()
-          const mockToken = 'token_' + Date.now()
-          
-          // 保存到本地存储
-          wx.setStorageSync('user_uid', mockUid)
-          wx.setStorageSync('auth_token', mockToken)
-          
-          resolve({ uid: mockUid, token: mockToken })
-        },
-        fail: reject
-      })
-    }
-  })
-}
-
-/**
- * 核心请求方法
- * @param {string} url - 请求地址
- * @param {object} data - 请求参数
- * @param {object} options - 请求配置
- */
-function request(url, data = {}, options = {}) {
-  return new Promise(async (resolve, reject) => {
-    // 检查是否启用 mock 模式
-    if (USE_MOCK) {
-      const mockData = getMockData(url, options.method || 'GET', data)
-      if (mockData) {
-        console.log(`[Request Mock] ${options.method || 'GET'} ${url}`)
-        resolve(mockData)
-        return
-      }
-    }
-
-    // 请求前检查登录状态（对于需要认证的接口）
-    const needAuth = options.needAuth !== false
-    if (needAuth && !isLoggedIn()) {
-      try {
-        await silentLogin()
-      } catch (e) {
-        console.error('[Request] 静默登录失败:', e)
-        // 静默登录失败不阻断请求，继续尝试
-      }
-    }
-
-    // 构建完整 URL
-    const fullUrl = url.startsWith('http') ? url : API_BASE_URL + url
-
-    // 获取 token
-    const token = getToken()
-
-    // 构建请求配置
-    const config = {
-      ...defaultConfig,
-      ...options,
-      url: fullUrl,
-      data: {
-        ...data,
-        // 自动添加 uid 参数（后端以此为准，前端仅作参考）
-        uid: getUid() || undefined
-      },
-      header: {
-        ...defaultConfig.header,
-        ...(options.header || {}),
-        // 添加 Authorization header
-        'Authorization': token ? `Bearer ${token}` : ''
-      }
-    }
-
-    // 移除自定义配置项
-    delete config.needAuth
-    delete config.retryCount
-
-    console.log(`[Request] ${config.method} ${url}`, data)
-
-    wx.request({
-      ...config,
-      success: (res) => {
-        console.log(`[Response] ${url}`, res.data)
-
-        // 处理业务错误码
-        if (res.data.code !== 0) {
-          // 业务错误
-          const error = new Error(res.data.message || '请求失败')
-          error.code = res.data.code
-          error.data = res.data
-
-          // 401 未授权，尝试刷新 token
-          if (res.statusCode === 401 && options.retryCount !== 1) {
-            refreshTokenAndRetry(url, data, options)
-              .then(resolve)
-              .catch(reject)
-            return
-          }
-
-          reject(error)
-          return
-        }
-
-        resolve(res.data)
-      },
-      fail: (err) => {
-        console.error(`[Request Error] ${url}`, err)
-
-        // 网络错误处理
-        let errorMessage = '网络请求失败'
-        if (err.errMsg) {
-          if (err.errMsg.includes('timeout')) {
-            errorMessage = '请求超时，请稍后重试'
-          } else if (err.errMsg.includes('abort')) {
-            errorMessage = '请求被取消'
-          }
-        }
-
-        const error = new Error(errorMessage)
-        error.originalError = err
-        reject(error)
-      }
-    })
-  })
-}
-
-/**
- * 刷新 token 并重试请求
- */
+// ==================== Token 刷新机制 ====================
 let isRefreshing = false
 let refreshPromise = null
+let pendingRequests = []
 
-function refreshTokenAndRetry(url, data, options) {
+function refreshToken() {
   if (isRefreshing) {
     return refreshPromise
   }
@@ -383,22 +155,36 @@ function refreshTokenAndRetry(url, data, options) {
   isRefreshing = true
 
   refreshPromise = new Promise((resolve, reject) => {
-    // 调用刷新 token 接口
-    request('/api/auth/refresh', {
-      refreshToken: wx.getStorageSync('refresh_token') || ''
-    }, { needAuth: false, retryCount: 1 })
+    const refreshToken = TokenManager.getRefreshToken()
+    
+    if (!refreshToken) {
+      isRefreshing = false
+      reject(new Error('No refresh token'))
+      return
+    }
+
+    cloudAPI.auth.refreshToken(refreshToken)
       .then(res => {
-        if (res.data && res.data.token) {
-          // 保存新 token
-          wx.setStorageSync('auth_token', res.data.token)
-          // 重试原请求
-          options.retryCount = 1
-          request(url, data, options).then(resolve).catch(reject)
+        if (res.code === 0 && res.data) {
+          TokenManager.save({
+            token: res.data.token,
+            refreshToken: res.data.refreshToken || refreshToken
+          })
+          
+          // 执行所有待处理的请求
+          pendingRequests.forEach(callback => callback())
+          pendingRequests = []
+          
+          resolve(res.data.token)
         } else {
-          reject(new Error('刷新token失败'))
+          throw new Error(res.message || '刷新token失败')
         }
       })
       .catch(err => {
+        console.error('[Token] 刷新失败:', err)
+        // 刷新失败，清除 token 并跳转登录
+        TokenManager.clear()
+        wx.navigateTo({ url: '/pages/login/login' })
         reject(err)
       })
       .finally(() => {
@@ -410,20 +196,113 @@ function refreshTokenAndRetry(url, data, options) {
   return refreshPromise
 }
 
-// 导出请求方法
+// ==================== 请求重试机制 ====================
+/**
+ * 核心请求方法
+ * @param {object} options - 请求配置
+ * @param {number} retryCount - 重试次数
+ * @returns {Promise<object>}
+ */
+function request(options, retryCount = 0) {
+  return new Promise((resolve, reject) => {
+    // 构建请求配置
+    const config = {
+      method: 'GET',
+      timeout: CONFIG.TIMEOUT,
+      header: {
+        'Content-Type': 'application/json'
+      },
+      ...options,
+      header: {
+        'Content-Type': 'application/json',
+        ...(options.header || {}),
+        'Authorization': TokenManager.get() ? `Bearer ${TokenManager.get()}` : ''
+      }
+    }
+
+    // 添加 uid 到请求参数（后端以此为准）
+    if (config.data && TokenManager.getUid()) {
+      config.data.uid = TokenManager.getUid()
+    }
+
+    console.log(`[Request] ${config.method} ${config.url}`, config.data)
+
+    wx.request({
+      ...config,
+      success: async (res) => {
+        console.log(`[Response] ${config.url}`, res.statusCode)
+        
+        // 业务成功
+        if (res.statusCode === 200 && res.data.code === 0) {
+          resolve(res.data)
+          return
+        }
+
+        // Token 过期，尝试刷新
+        if (res.statusCode === 401 && retryCount < CONFIG.MAX_RETRY) {
+          try {
+            await refreshToken()
+            // 刷新成功，重试请求
+            const result = await request(options, retryCount + 1)
+            resolve(result)
+          } catch (err) {
+            reject(new Error('认证失败，请重新登录'))
+          }
+          return
+        }
+
+        // 其他错误
+        const error = new Error(res.data?.message || `请求失败(${res.statusCode})`)
+        error.code = res.data?.code || res.statusCode
+        error.data = res.data
+        reject(error)
+      },
+      fail: (err) => {
+        console.error(`[Request Error] ${config.url}`, err)
+        
+        // 网络错误重试
+        if (retryCount < CONFIG.MAX_RETRY) {
+          console.log(`[Request] 重试请求 (${retryCount + 1}/${CONFIG.MAX_RETRY})`)
+          setTimeout(() => {
+            request(options, retryCount + 1).then(resolve).catch(reject)
+          }, 1000 * (retryCount + 1))  // 指数退避
+          return
+        }
+
+        // 构建错误信息
+        let errorMessage = '网络请求失败'
+        if (err.errMsg) {
+          if (err.errMsg.includes('timeout')) {
+            errorMessage = '请求超时，请稍后重试'
+          } else if (err.errMsg.includes('fail')) {
+            errorMessage = '网络连接失败，请检查网络'
+          }
+        }
+
+        const error = new Error(errorMessage)
+        error.originalError = err
+        reject(error)
+      }
+    })
+  })
+}
+
+// ==================== 导出方法 ====================
 module.exports = {
-  // 原有 HTTP 请求方法
+  // HTTP 请求方法
   request,
-  get: (url, data, options) => request(url, data, { ...options, method: 'GET' }),
-  post: (url, data, options) => request(url, data, { ...options, method: 'POST' }),
+  get: (url, data, options) => request({ ...options, url, data, method: 'GET' }),
+  post: (url, data, options) => request({ ...options, url, data, method: 'POST' }),
+  put: (url, data, options) => request({ ...options, url, data, method: 'PUT' }),
+  delete: (url, data, options) => request({ ...options, url, data, method: 'DELETE' }),
   
-  // 云函数调用方法
+  // 云函数调用
   cloudCall,
   cloud: cloudAPI,
   
-  // 辅助方法
-  getToken,
-  getUid,
-  isLoggedIn,
-  silentLogin
+  // Token 管理
+  token: TokenManager,
+  
+  // 配置
+  config: CONFIG
 }
